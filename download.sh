@@ -18,4 +18,4 @@ tar xf nginx-${ARCH}.tar.gz
 
 wget --progress=dot:giga https://github.com/home-assistant/core/archive/refs/tags/${VERSION}.tar.gz
 tar xf ${VERSION}.tar.gz
-mv ${VERSION} home-assistant
+mv core-${VERSION} home-assistant
