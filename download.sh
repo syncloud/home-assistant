@@ -20,3 +20,6 @@ tar xf nginx-${ARCH}.tar.gz
 wget --progress=dot:giga https://github.com/home-assistant/core/archive/refs/tags/${VERSION}.tar.gz
 tar xf ${VERSION}.tar.gz
 mv core-${VERSION} home-assistant
+
+
+apt-get install -y ibffi-dev libssl-dev libjpeg-dev zlib1g-dev autoconf build-essential libopenjp2-7 libtiff5
