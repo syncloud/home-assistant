@@ -22,4 +22,4 @@ tar xf ${VERSION}.tar.gz
 mv core-${VERSION} home-assistant
 
 
-apt-get install -y ibffi-dev libssl-dev libjpeg-dev zlib1g-dev autoconf build-essential libopenjp2-7 libtiff5
+apt-get install -y libffi-dev libssl-dev libjpeg-dev zlib1g-dev autoconf build-essential libopenjp2-7 libtiff5
