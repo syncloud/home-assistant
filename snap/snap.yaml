@@ -24,11 +24,8 @@ apps:
   storage-change:
     command: hooks/storage-change
 
-  openssl:
-    command: bin/openssl
-
 confinement: strict
-description: Bitwarden
+description: Home-Assistant
 grade: stable
-name: bitwarden
-summary: Password management
+name: home-assistant
+summary: Home-Assistant
