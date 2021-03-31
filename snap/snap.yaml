@@ -11,7 +11,7 @@ apps:
     before: [nginx]
 
   nginx:
-    user: bitwarden
+    user: home-assistant
     command: bin/service.nginx.sh start
     daemon: simple
     plugs:
