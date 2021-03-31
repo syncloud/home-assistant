@@ -9,4 +9,4 @@ mkdir -p ${DIR}/build/bin
 #${DIR}/build/python/bin/pip install -r ${DIR}/build/home-assistant/requirements_all.txt
 #${DIR}/build/python/bin/python ${DIR}/build/home-assistant/setup.py install
 
-${DIR}/build/python/bin/pip install home-assistant
+${DIR}/build/python/bin/pip install homeassistant
