@@ -2,4 +2,4 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
 
-exec ${DIR}/python/bin/python -m homeassistant --config $SNAP_DATA
+exec ${DIR}/python/bin/python  ${DIR}/python/bin/hass --config $SNAP_DATA
