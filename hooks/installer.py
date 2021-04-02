@@ -49,7 +49,7 @@ class Installer:
         self.install_config()
 
         with open("{}/.install-id".format(self.snap_data_dir), 'w') as the_file:
-            the_file.write(str(uuid.uuid4())
+            the_file.write(str(uuid.uuid4()))
 
     def refresh(self):
         self.install_config()
