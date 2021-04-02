@@ -4,6 +4,7 @@ from os.path import join, isfile
 
 from syncloudlib import fs, linux, gen, logger
 from syncloudlib.application import paths, storage
+from subprocess import check_output
 
 APP_NAME = 'home-assistant'
 USER_NAME = APP_NAME
@@ -45,6 +46,7 @@ class Installer:
 
     def install(self):
         self.install_config()
+        check_output("uuid > {}/.install-id".format(self.snap_data_dir), shell=True)
 
     def refresh(self):
         self.install_config()
