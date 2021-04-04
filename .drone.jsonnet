@@ -3,9 +3,6 @@ local name = "home-assistant";
 local build(arch) = {
     kind: "pipeline",
     name: arch,
-    clone: {
-        disable: true
-    },
     platform: {
         os: "linux",
         arch: arch
