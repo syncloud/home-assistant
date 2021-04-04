@@ -54,7 +54,7 @@ steps:
       from_secret: AWS_SECRET_ACCESS_KEY
 
 - name: artifact
-  image: appleboy/drone-scp
+  image: appleboy/drone-scp:1.6.2
   settings:
     command_timeout: 2m
     host:
@@ -168,7 +168,7 @@ steps:
       from_secret: AWS_SECRET_ACCESS_KEY
 
 - name: artifact
-  image: appleboy/drone-scp
+  image: appleboy/drone-scp:1.6.2
   settings:
     command_timeout: 2m
     host:
