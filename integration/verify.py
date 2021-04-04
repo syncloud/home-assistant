@@ -7,6 +7,7 @@ import pytest
 import requests
 from syncloudlib.integration.hosts import add_host_alias_by_ip
 from syncloudlib.integration.installer import local_install, wait_for_installer
+from syncloudlib.http import wait_for_rest
 
 DIR = dirname(__file__)
 TMP_DIR = '/tmp/syncloud'
@@ -62,9 +63,8 @@ def test_install(app_archive_path, device_host, device_session, device_password)
     wait_for_installer(device_session, device_host)
 
 
-def test_index(app_domain):
-    response = requests.get('https://{0}'.format(app_domain), verify=False)
-    assert response.status_code == 200, response.text
+def test_index(app_domain, device_session):
+    wait_for_rest(device_session, 'https://{0}'.format(app_domain), 200)
 
 
 def test_remove(device, app):
