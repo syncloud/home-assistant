@@ -123,7 +123,7 @@ local build(arch) = {
     services: [
         {
             name: "device",
-            image: "syncloud/systemd-" + arch,
+            image: "syncloud/systemd-" + arch + ":2021.4.1",
             privileged: true,
             volumes: [
                 {
