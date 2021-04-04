@@ -10,7 +10,7 @@ local build(arch) = {
     steps: [
         {
             name: "version",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             commands: [
                 "echo $(date +%y%m%d)$DRONE_BUILD_NUMBER > version",
                 "echo " + arch + "$DRONE_BRANCH > domain"
@@ -18,14 +18,14 @@ local build(arch) = {
         },
         {
             name: "download",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             commands: [
                 "./download.sh"
             ]
         },
         {
             name: "build",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             commands: [
                 "./build.sh"
             ]
@@ -40,7 +40,7 @@ local build(arch) = {
         },
         {
             name: "test-integration",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             commands: [
               "pip2 install -r dev_requirements.txt",
               "APP_ARCHIVE_PATH=$(realpath $(cat package.name))",
@@ -52,7 +52,7 @@ local build(arch) = {
         if arch == "arm" then {} else
         {
             name: "test-ui-desktop",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             commands: [
               "pip2 install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
@@ -67,7 +67,7 @@ local build(arch) = {
         if arch == "arm" then {} else
         {
             name: "test-ui-mobile",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             commands: [
               "pip2 install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
@@ -81,7 +81,7 @@ local build(arch) = {
         },
         {
             name: "upload",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             environment: {
                 AWS_ACCESS_KEY_ID: {
                     from_secret: "AWS_ACCESS_KEY_ID"

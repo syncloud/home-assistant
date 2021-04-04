@@ -8,18 +8,18 @@ platform:
 
 steps:
 - name: version
-  image: syncloud/build-deps-arm
+  image: syncloud/build-deps-arm:2021.4.1
   commands:
   - echo $(date +%y%m%d)$DRONE_BUILD_NUMBER > version
   - echo arm$DRONE_BRANCH > domain
 
 - name: download
-  image: syncloud/build-deps-arm
+  image: syncloud/build-deps-arm:2021.4.1
   commands:
   - ./download.sh
 
 - name: build
-  image: syncloud/build-deps-arm
+  image: syncloud/build-deps-arm:2021.4.1
   commands:
   - ./build.sh
 
@@ -30,7 +30,7 @@ steps:
   - ./package.sh home-assistant $VERSION
 
 - name: test-integration
-  image: syncloud/build-deps-arm
+  image: syncloud/build-deps-arm:2021.4.1
   commands:
   - pip2 install -r dev_requirements.txt
   - APP_ARCHIVE_PATH=$(realpath $(cat package.name))
@@ -41,7 +41,7 @@ steps:
 
 
 - name: upload
-  image: syncloud/build-deps-arm
+  image: syncloud/build-deps-arm:2021.4.1
   commands:
   - VERSION=$(cat version)
   - PACKAGE=$(cat package.name)
@@ -102,18 +102,18 @@ platform:
 
 steps:
 - name: version
-  image: syncloud/build-deps-amd64
+  image: syncloud/build-deps-amd64:2021.4.1
   commands:
   - echo $(date +%y%m%d)$DRONE_BUILD_NUMBER > version
   - echo amd64$DRONE_BRANCH > domain
 
 - name: download
-  image: syncloud/build-deps-amd64
+  image: syncloud/build-deps-amd64:2021.4.1
   commands:
   - ./download.sh
 
 - name: build
-  image: syncloud/build-deps-amd64
+  image: syncloud/build-deps-amd64:2021.4.1
   commands:
   - ./build.sh
 
@@ -124,7 +124,7 @@ steps:
   - ./package.sh home-assistant $VERSION
 
 - name: test-integration
-  image: syncloud/build-deps-amd64
+  image: syncloud/build-deps-amd64:2021.4.1
   commands:
   - pip2 install -r dev_requirements.txt
   - APP_ARCHIVE_PATH=$(realpath $(cat package.name))
@@ -133,7 +133,7 @@ steps:
   - py.test -x -s verify.py --domain=$DOMAIN --app-archive-path=$APP_ARCHIVE_PATH --device-host=device --app=home-assistant
 
 - name: test-ui-desktop
-  image: syncloud/build-deps-amd64
+  image: syncloud/build-deps-amd64:2021.4.1
   commands:
   - pip2 install -r dev_requirements.txt
   - DOMAIN=$(cat domain)
@@ -144,7 +144,7 @@ steps:
     path: /dev/shm
 
 - name: test-ui-mobile
-  image: syncloud/build-deps-amd64
+  image: syncloud/build-deps-amd64:2021.4.1
   commands:
   - pip2 install -r dev_requirements.txt
   - DOMAIN=$(cat domain)
@@ -155,7 +155,7 @@ steps:
     path: /dev/shm
 
 - name: upload
-  image: syncloud/build-deps-amd64
+  image: syncloud/build-deps-amd64:2021.4.1
   commands:
   - VERSION=$(cat version)
   - PACKAGE=$(cat package.name)
