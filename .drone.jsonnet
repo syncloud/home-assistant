@@ -11,14 +11,6 @@ local build(arch) = {
         arch: arch
     },
     steps: [
-{
-    name: "clone",
-    image: "alpine/git:2.30.1",
-    commands: [
-        "git clone $DRONE_REMOTE_URL .",
-        "git checkout $DRONE_COMMIT"
-    ]
-},
         {
             name: "version",
             image: "syncloud/build-deps-" + arch,
