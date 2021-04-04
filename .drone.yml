@@ -74,7 +74,7 @@ steps:
 
 services:
 - name: device
-  image: syncloud/systemd-arm:2021.4.1
+  image: syncloud/systemd-arm
   privileged: true
   volumes:
   - name: dbus
@@ -189,7 +189,7 @@ steps:
 
 services:
 - name: device
-  image: syncloud/systemd-amd64:2021.4.1
+  image: syncloud/systemd-amd64
   privileged: true
   volumes:
   - name: dbus
