@@ -2,6 +2,7 @@ local name = "home-assistant";
 
 local build(arch) = {
     kind: "pipeline",
+    type: "docker",
     name: arch,
     platform: {
         os: "linux",
