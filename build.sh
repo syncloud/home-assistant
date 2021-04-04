@@ -13,8 +13,9 @@ sed -i '/ibm-watson==.*/d' ${DIR}/build/home-assistant/requirements_all.txt
 sed -i '/meteofrance-api==.*/d' ${DIR}/build/home-assistant/requirements_all.txt
 sed -i '/mitemp_bt==.*/d' ${DIR}/build/home-assistant/requirements_all.txt
 sed -i '/mycroftapi==.*/d' ${DIR}/build/home-assistant/requirements_all.txt
+#${DIR}/build/python/bin/pip install -r ${DIR}/build/home-assistant/requirements_all.txt
+${DIR}/build/python/bin/pip install -r ${DIR}/build/home-assistant/requirements.txt
 
-${DIR}/build/python/bin/pip install -r ${DIR}/build/home-assistant/requirements_all.txt
 #${DIR}/build/python/bin/python ${DIR}/build/home-assistant/setup.py install
 
 ${DIR}/build/python/bin/pip install homeassistant
