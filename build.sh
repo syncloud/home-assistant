@@ -21,4 +21,6 @@ ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 #${DIR}/build/python/bin/pip install homeassistant
 
 #${DIR}/build/python/bin/python  ${DIR}/build/python/bin/hass
-${DIR}/build/python/bin/python -m pip install wheel --constraint ${DIR}/build/home-assistant/homeassistant/package_constraints.txt
+cd ${DIR}/build/home-assistant
+${DIR}/build/python/bin/python -m pip install wheel --constraint homeassistant/package_constraints.txt
+${DIR}/build/python/bin/python -m pip install -e . --constraint homeassistant/package_constraints.txt
