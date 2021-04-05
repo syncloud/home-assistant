@@ -17,9 +17,9 @@ mv python3 python
 wget --progress=dot:giga ${DOWNLOAD_URL}/nginx-${ARCH}.tar.gz
 tar xf nginx-${ARCH}.tar.gz
 
-wget --progress=dot:giga https://github.com/home-assistant/core/archive/refs/tags/${VERSION}.tar.gz
-tar xf ${VERSION}.tar.gz
-mv core-${VERSION} home-assistant
+#wget --progress=dot:giga https://github.com/home-assistant/core/archive/refs/tags/${VERSION}.tar.gz
+#tar xf ${VERSION}.tar.gz
+#mv core-${VERSION} home-assistant
 
 
 apt-get install -y libffi-dev libssl-dev libjpeg-dev zlib1g-dev autoconf build-essential libopenjp2-7 libtiff5
