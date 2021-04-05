@@ -49,11 +49,11 @@ local build(arch) = {
               "cd integration",
               "py.test -x -s verify.py --domain=$DOMAIN --app-archive-path=$APP_ARCHIVE_PATH --device-host=device --app=" + name
             ]
-        },
+        }] + if arch == "arm" then [] else [
         {
             name: "test-ui-desktop",
             image: "syncloud/build-deps-" + arch + ":2021.4.1",
-            commands: if arch == "arm" then [] else [
+            commands:  [
               "pip2 install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
@@ -67,7 +67,7 @@ local build(arch) = {
         {
             name: "test-ui-mobile",
             image: "syncloud/build-deps-" + arch + ":2021.4.1",
-            commands: if arch == "arm" then [] else [
+            commands: [
               "pip2 install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
@@ -77,7 +77,7 @@ local build(arch) = {
                 name: "shm",
                 path: "/dev/shm"
             }]
-        },
+        }] + [
         {
             name: "upload",
             image: "syncloud/build-deps-" + arch + ":2021.4.1",
