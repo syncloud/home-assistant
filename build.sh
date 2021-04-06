@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
+VERSION=2021.3.4
 mkdir -p ${DIR}/build/bin
 
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
@@ -18,9 +18,9 @@ ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
 #${DIR}/build/python/bin/python ${DIR}/build/home-assistant/setup.py install
 
-#${DIR}/build/python/bin/pip install homeassistant
+${DIR}/build/python/bin/pip install homeassistant==${VERSION}
 
 #${DIR}/build/python/bin/python  ${DIR}/build/python/bin/hass
-cd ${DIR}/build/home-assistant
-${DIR}/build/python/bin/python -m pip install wheel --constraint homeassistant/package_constraints.txt
-${DIR}/build/python/bin/python setup.py install
+#cd ${DIR}/build/home-assistant
+#${DIR}/build/python/bin/python -m pip install wheel --constraint homeassistant/package_constraints.txt
+#${DIR}/build/python/bin/python setup.py install

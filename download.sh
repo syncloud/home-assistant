@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-VERSION=2021.3.4
+#VERSION=2021.3.4
 DOWNLOAD_URL=https://github.com/syncloud/3rdparty/releases/download/1
 ARCH=$(uname -m)
 rm -rf ${DIR}/build
@@ -17,9 +17,9 @@ mv python3 python
 wget --progress=dot:giga ${DOWNLOAD_URL}/nginx-${ARCH}.tar.gz
 tar xf nginx-${ARCH}.tar.gz
 
-wget --progress=dot:giga https://github.com/home-assistant/core/archive/refs/tags/${VERSION}.tar.gz
-tar xf ${VERSION}.tar.gz
-mv core-${VERSION} home-assistant
+#wget --progress=dot:giga https://github.com/home-assistant/core/archive/refs/tags/${VERSION}.tar.gz
+#tar xf ${VERSION}.tar.gz
+#mv core-${VERSION} home-assistant
 
 
 apt-get install -y libffi-dev libssl-dev libjpeg-dev zlib1g-dev autoconf build-essential libopenjp2-7 libtiff5
