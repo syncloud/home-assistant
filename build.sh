@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-VERSION=2021.3.4
+#VERSION=2021.3.4
 mkdir -p ${DIR}/build/bin
 
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
@@ -13,14 +13,15 @@ ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 #sed -i '/meteofrance-api==.*/d' ${DIR}/build/home-assistant/requirements_all.txt
 #sed -i '/mitemp_bt==.*/d' ${DIR}/build/home-assistant/requirements_all.txt
 #sed -i '/mycroftapi==.*/d' ${DIR}/build/home-assistant/requirements_all.txt
-#${DIR}/build/python/bin/pip install -r ${DIR}/build/home-assistant/requirements_all.txt
+
 #${DIR}/build/python/bin/pip install -r ${DIR}/build/home-assistant/requirements.txt
 
 #${DIR}/build/python/bin/python ${DIR}/build/home-assistant/setup.py install
 
-${DIR}/build/python/bin/pip install homeassistant==${VERSION}
+#${DIR}/build/python/bin/pip install homeassistant==${VERSION}
 
 #${DIR}/build/python/bin/python  ${DIR}/build/python/bin/hass
-#cd ${DIR}/build/home-assistant
-#${DIR}/build/python/bin/python -m pip install wheel --constraint homeassistant/package_constraints.txt
-#${DIR}/build/python/bin/python setup.py install
+cd ${DIR}/build/home-assistant
+${DIR}/build/python/bin/pip install wheel Cython --constraint homeassistant/package_constraints.txt
+${DIR}/build/python/bin/pip install -r requirements_all.txt --constraint homeassistant/package_constraints.txt
+${DIR}/build/python/bin/python setup.py install
