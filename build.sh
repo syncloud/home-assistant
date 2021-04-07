@@ -21,7 +21,7 @@ ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 #${DIR}/build/python/bin/pip install homeassistant==${VERSION}
 
 #${DIR}/build/python/bin/python  ${DIR}/build/python/bin/hass
-cd cd ${DIR}/build
+cd ${DIR}/build
 ${DIR}/build/python/bin/python -m venv venv
 source venv/bin/activate
 cd ${DIR}/build/home-assistant
