@@ -2,6 +2,7 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 mkdir -p ${DIR}/build/bin
+apt install libncurses5
 
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 cd ${DIR}/build
