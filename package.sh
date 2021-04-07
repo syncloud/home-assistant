@@ -16,6 +16,7 @@ mkdir $BUILD_DIR
 mv ${DIR}/build/python ${BUILD_DIR}
 mv ${DIR}/build/nginx ${BUILD_DIR}
 mv ${DIR}/build/bin ${BUILD_DIR}
+mv ${DIR}/build/home-assistant ${BUILD_DIR}
 
 cp -r ${DIR}/bin/* ${BUILD_DIR}/bin
 cp -r ${DIR}/config ${BUILD_DIR}/config.templates
