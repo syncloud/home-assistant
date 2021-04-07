@@ -23,6 +23,7 @@ ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 #${DIR}/build/python/bin/python  ${DIR}/build/python/bin/hass
 cd ${DIR}/build
 ${DIR}/build/python/bin/python -m venv venv
+export LD_LIBRARY_PATH=${DIR}/build/python/lib
 source venv/bin/activate
 cd ${DIR}/build/home-assistant
 pip install wheel Cython --constraint homeassistant/package_constraints.txt
