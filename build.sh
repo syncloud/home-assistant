@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-#VERSION=2021.3.4
 mkdir -p ${DIR}/build/bin
 
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt

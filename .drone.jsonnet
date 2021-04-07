@@ -26,14 +26,14 @@ local build(arch) = {
         },
         {
             name: "build",
-            image: "syncloud/build-deps-" + arch + ":2021.4.1",
+            image: "gcc:10",
             commands: [
                 "./build.sh"
             ]
         },
         {
             name: "package",
-            image: "syncloud/build-deps-" + arch,
+            image: "syncloud/build-deps-" + arch + ":2021.4.1",
             commands: [
                 "VERSION=$(cat version)",
                 "./package.sh " + name + " $VERSION"
