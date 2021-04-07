@@ -4,7 +4,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 mkdir -p ${DIR}/build/bin
 
 apt update
-apt install -y libncurses5
+apt install -y libncurses5 libudev-dev build-essential
 
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 cd ${DIR}/build
