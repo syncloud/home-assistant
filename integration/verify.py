@@ -64,7 +64,7 @@ def test_install(app_archive_path, device_host, device_session, device_password)
 
 
 def test_index(app_domain, device_session):
-    wait_for_rest(device_session, 'https://{0}'.format(app_domain), 200, attempts=20)
+    wait_for_rest(device_session, 'https://{0}'.format(app_domain), 200)
 
 
 def test_remove(device, app):
