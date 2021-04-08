@@ -19,9 +19,5 @@ python setup.py install
 sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
 sed -i 's|#!.*/bin/python|#!/snap/home-assistant/current/python/bin/python|g' ${DIR}/build/home-assistant/bin/hass
 sed -i 's|home.*|home = /snap/home-assistant/current/python/bin|g' ${DIR}/build/home-assistant/pyvenv.cfg
-rm ${DIR}/build/home-assistant/bin/python
-ln -s /snap/home-assistant/current/python/bin/python ${DIR}/build/home-assistant/python/bin/python
 rm ${DIR}/build/home-assistant/bin/python3
-ln -s /snap/home-assistant/current/python/bin/python3 ${DIR}/build/home-assistant/python/bin/python
-rm ${DIR}/build/home-assistant/bin/lib64
-ln -s /snap/home-assistant/current/python/lib ${DIR}/build/home-assistant/python/lib64 
+ln -s /snap/home-assistant/current/python/bin/python3 ${DIR}/build/home-assistant/bin/python3
