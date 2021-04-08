@@ -2,7 +2,7 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 mkdir -p ${DIR}/build/bin
-
+WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg-architecture -q DEB_HOST_ARCH)/
 apt update
 apt install -y libncurses5 libudev-dev build-essential
 
@@ -14,8 +14,14 @@ sed -i 's/include-system-site-packages = false/include-system-site-packages = tr
 source home-assistant/bin/activate
 cd ${DIR}/build/core-src
 pip install wheel Cython --constraint homeassistant/package_constraints.txt
-pip install -r requirements_all.txt --constraint homeassistant/package_constraints.txt
+pip install --no-cache-dir --no-index --only-binary=:all: --find-links ${WHEELS_LINKS} -r requirements_all.txt --constraint homeassistant/package_constraints.txt
 python setup.py install
 sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
 sed -i 's|#!.*/bin/python|#!/snap/home-assistant/current/python/bin/python|g' ${DIR}/build/home-assistant/bin/hass
 sed -i 's|home.*|home = /snap/home-assistant/current/python/bin|g' ${DIR}/build/home-assistant/pyvenv.cfg
+rm ${DIR}/build/home-assistant/bin/python
+ln -ls ${DIR}/build/home-assistant/python/bin/python /snap/home-assistant/current/python/bin/python
+rm ${DIR}/build/home-assistant/bin/python3
+ln -ls ${DIR}/build/home-assistant/python/bin/python /snap/home-assistant/current/python/bin/python3
+rm ${DIR}/build/home-assistant/bin/lib64
+ln -ls ${DIR}/build/home-assistant/python/lib64 /snap/home-assistant/current/python/lib
