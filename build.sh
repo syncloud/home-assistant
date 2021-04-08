@@ -17,7 +17,7 @@ pip install wheel Cython --constraint homeassistant/package_constraints.txt
 pip install --no-cache-dir --no-index --only-binary=:all: --find-links ${WHEELS_LINKS} -r requirements_all.txt --constraint homeassistant/package_constraints.txt
 python setup.py install
 sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
-sed -i 's|#!.*/bin/python|#!/snap/home-assistant/current/python/bin/python|g' ${DIR}/build/home-assistant/bin/hass
+find ${DIR}/build/home-assistant -type f -executable -exec sed -i 's|#!.*/bin/python.*|#!/snap/home-assistant/current/python/bin/python|g' {} \;
 sed -i 's|home.*|home = /snap/home-assistant/current/python/bin|g' ${DIR}/build/home-assistant/pyvenv.cfg
 rm ${DIR}/build/home-assistant/bin/python3
-ln -s /snap/home-assistant/current/python/bin/python3 ${DIR}/build/home-assistant/bin/python3
+ln -s /snap/home-assistant/current/python/bin/python ${DIR}/build/home-assistant/bin/python3
