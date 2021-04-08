@@ -18,3 +18,4 @@ pip install -r requirements_all.txt --constraint homeassistant/package_constrain
 python setup.py install
 sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
 sed -i 's|#!.*/bin/python|#!/snap/home-assistant/current/python/bin/python|g' ${DIR}/build/home-assistant/bin/hass
+sed -i 's|home.*|home = /snap/home-assistant/current/python/bin|g' ' ${DIR}/build/home-assistant/pyvenv.cfg
