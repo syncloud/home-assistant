@@ -24,4 +24,4 @@ ln -ls ${DIR}/build/home-assistant/python/bin/python /snap/home-assistant/curren
 rm ${DIR}/build/home-assistant/bin/python3
 ln -ls ${DIR}/build/home-assistant/python/bin/python /snap/home-assistant/current/python/bin/python3
 rm ${DIR}/build/home-assistant/bin/lib64
-ln -ls ${DIR}/build/home-assistant/python/lib64 /snap/home-assistant/current/python/lib
+ln -s ${DIR}/build/home-assistant/python/lib64 /snap/home-assistant/current/python/lib
