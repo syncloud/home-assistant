@@ -3,7 +3,7 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg-architecture -q DEB_HOST_ARCH)/
 apt update
-apt install -y libncurses5 libudev-dev build-essential musl
+apt install -y libncurses5 libudev-dev build-essential musl cmake
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
 wget https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.0.6.tar.gz
