@@ -6,6 +6,13 @@ apt update
 apt install -y libncurses5 libudev-dev build-essential musl
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
+wget https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz
+tar xf libffi-3.3.tar.gz
+cd libffi-3.3
+./configure --prefix=${DIR}/build/python
+make -j4
+make install
+
 mkdir -p /snap/home-assistant/current
 mv ${DIR}/build/python /snap/home-assistant/current
 cd /snap/home-assistant/current
@@ -24,7 +31,7 @@ mv /snap/home-assistant/current/python ${DIR}/build
 mv /snap/home-assistant/current/home-assistant ${DIR}/build
 
 cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
-cp /lib/*-linux-musl/libc.so ${DIR}/build/python/lib/libc.musl-$(uname -m).so.1
+cp /lib/*-linux-musl*/libc.so ${DIR}/build/python/lib/libc.musl-$(uname -m).so.1
 #find ${DIR}/build -name "*musl"'
 #sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/current/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
 find ${DIR}/build/home-assistant -type f -executable -exec sed -i 's|#!.*/bin/python.*|#!/snap/home-assistant/current/python/bin/python|g' {} \;
