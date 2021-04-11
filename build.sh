@@ -6,6 +6,15 @@ apt update
 apt install -y libncurses5 libudev-dev build-essential musl cmake
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
+cd ${DIR}/build
+wget https://download.osgeo.org/libtiff/tiff-4.2.0.tar.gz
+tar xf tiff-4.2.0.tar.gz
+cd tiff-4.2.0
+./configure --prefix=${DIR}/build/python
+make -j4
+make install
+
+cd ${DIR}/build
 wget https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.0.6.tar.gz
 tar xf 2.0.6.tar.gz
 cd libjpeg-turbo-2.0.6
@@ -13,6 +22,7 @@ cmake -DCMAKE_INSTALL_PREFIX=${DIR}/build/python -DWITH_JPEG8=1
 make -j4
 make install
 
+cd ${DIR}/build
 wget https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz
 tar xf libffi-3.3.tar.gz
 cd libffi-3.3
