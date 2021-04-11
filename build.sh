@@ -6,6 +6,14 @@ apt update
 apt install -y libncurses5 libudev-dev build-essential musl
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
+wget https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.0.6.tar.gz
+tar xf 2.0.6.tar.gz
+cd libjpeg-turbo-2.0.6
+autoreconf -fiv
+./configure  --prefix=${DIR}/build/python --with-jpeg8 
+make -j4
+make install
+
 wget https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz
 tar xf libffi-3.3.tar.gz
 cd libffi-3.3
