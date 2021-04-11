@@ -24,6 +24,7 @@ mv /snap/home-assistant/current/python ${DIR}/build
 mv /snap/home-assistant/current/home-assistant ${DIR}/build
 
 cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
+cp /lib/*-linux-musl/libc.so ${DIR}/build/python/lib/libc.musl-$(dpkg-architecture -q DEB_HOST_ARCH).so.1
 #find ${DIR}/build -name "*musl"'
 #sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/current/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
 find ${DIR}/build/home-assistant -type f -executable -exec sed -i 's|#!.*/bin/python.*|#!/snap/home-assistant/current/python/bin/python|g' {} \;
