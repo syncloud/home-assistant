@@ -3,7 +3,7 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg-architecture -q DEB_HOST_ARCH)/
 apt update
-apt install -y libncurses5 libudev-dev build-essential
+apt install -y libncurses5 libudev-dev build-essential musl
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
 mkdir -p /snap/home-assistant/current
@@ -23,8 +23,8 @@ python -c "import asyncio"
 mv /snap/home-assistant/current/python ${DIR}/build
 mv /snap/home-assistant/current/home-assistant ${DIR}/build
 
-#cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
-find ${DIR}/build -name "*musl"'
+cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
+#find ${DIR}/build -name "*musl"'
 #sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/current/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
 find ${DIR}/build/home-assistant -type f -executable -exec sed -i 's|#!.*/bin/python.*|#!/snap/home-assistant/current/python/bin/python|g' {} \;
 sed -i 's|home.*|home = /snap/home-assistant/current/python/bin|g' ${DIR}/build/home-assistant/pyvenv.cfg
