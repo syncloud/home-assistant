@@ -7,6 +7,14 @@ apt install -y libncurses5 libudev-dev build-essential musl cmake
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
 cd ${DIR}/build
+wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.2.0.tar.gz
+tar xf libwebp-1.2.0.tar.gz
+cd libwebp-1.2.0
+./configure --prefix=${DIR}/build/python
+make -j4
+make install
+
+cd ${DIR}/build
 wget https://download.osgeo.org/libtiff/tiff-4.2.0.tar.gz
 tar xf tiff-4.2.0.tar.gz
 cd tiff-4.2.0
