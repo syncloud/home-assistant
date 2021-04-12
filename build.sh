@@ -7,6 +7,14 @@ apt install -y libncurses5 libudev-dev build-essential musl cmake
 ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 
 cd ${DIR}/build
+wget https://www.cl.cam.ac.uk/~mgk25/jbigkit/download/jbigkit-2.1.tar.gz
+tar xf jbigkit-2.1.tar.gz
+cd jbigkit-2.1
+./configure --prefix=${DIR}/build/python
+make -j4
+make install
+
+cd ${DIR}/build
 wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-0.5.2.tar.gz
 tar xf libwebp-0.5.2.tar.gz
 cd libwebp-0.5.2
