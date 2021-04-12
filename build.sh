@@ -9,7 +9,7 @@ ${DIR}/build/python/bin/pip install -r ${DIR}/requirements.txt
 cd ${DIR}/build
 wget https://github.com/mvanderkolff/jbigkit-packaging/archive/refs/tags/debian/2.1-3.tar.gz
 tar xf 2.1-3.tar.gz
-cd jbigkit-packaging-2.1-3
+cd jbigkit-packaging-debian-2.1-3
 for i in debian/patches/*.diff; do patch -p1 < $i; done
 make
 cp libjbig/.libs/*.so* ${DIR}/build/python/lib
