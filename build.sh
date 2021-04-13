@@ -59,7 +59,11 @@ mv /snap/home-assistant/current/python ${DIR}/build
 mv /snap/home-assistant/current/home-assistant ${DIR}/build
 
 cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
-cp /lib/*-linux-musl*/libc.so ${DIR}/build/python/lib/libc.musl-$(uname -m).so.1
+ARCH=$(uname -m)
+if [[ $ARCH == "armv7l" ]]; then
+    ARCH=armhf
+if
+cp /lib/*-linux-musl*/libc.so ${DIR}/build/python/lib/libc.musl-$ARCH.so.1
 
 #find ${DIR}/build -name "*musl"'
 #sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/current/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
