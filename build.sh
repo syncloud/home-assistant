@@ -62,7 +62,7 @@ cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
 ARCH=$(uname -m)
 if [[ $ARCH == "armv7l" ]]; then
     ARCH=armhf
-if
+fi
 cp /lib/*-linux-musl*/libc.so ${DIR}/build/python/lib/libc.musl-$ARCH.so.1
 
 #find ${DIR}/build -name "*musl"'
