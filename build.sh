@@ -68,7 +68,7 @@ cp /lib/*-linux-musl*/libc.so ${DIR}/build/python/lib/libc.musl-$(uname -m).so.1
 
 cp /usr/lib/*/libcrypto.so* ${DIR}/build/python/lib
 cp /usr/lib/*/libssl.so* ${DIR}/build/python/lib
-cp /usr/lib/*/libjpeg.so* ${DIR}/build/python/lib
+#cp /usr/lib/*/libjpeg.so* ${DIR}/build/python/lib
 
 #find ${DIR}/build -name "*musl"'
 #sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/current/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
