@@ -34,6 +34,9 @@ cd ${DIR}/build
 wget https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.0.6.tar.gz
 tar xf 2.0.6.tar.gz
 cd libjpeg-turbo-2.0.6
+cmake -DCMAKE_INSTALL_PREFIX=${DIR}/build/python
+make -j4
+make install
 cmake -DCMAKE_INSTALL_PREFIX=${DIR}/build/python -DWITH_JPEG8=1
 make -j4
 make install
