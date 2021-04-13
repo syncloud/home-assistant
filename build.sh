@@ -41,14 +41,6 @@ cmake -DCMAKE_INSTALL_PREFIX=${DIR}/build/python -DWITH_JPEG8=1
 make -j4
 make install
 
-cd ${DIR}/build
-wget https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz
-tar xf libffi-3.3.tar.gz
-cd libffi-3.3
-./configure --prefix=${DIR}/build/python
-make -j4
-make install
-
 mkdir -p /snap/home-assistant/current
 mv ${DIR}/build/python /snap/home-assistant/current
 cd /snap/home-assistant/current
@@ -68,10 +60,6 @@ mv /snap/home-assistant/current/home-assistant ${DIR}/build
 
 cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
 cp /lib/*-linux-musl*/libc.so ${DIR}/build/python/lib/libc.musl-$(uname -m).so.1
-
-cp /usr/lib/*/libcrypto.so* ${DIR}/build/python/lib
-cp /usr/lib/*/libssl.so* ${DIR}/build/python/lib
-#cp /usr/lib/*/libjpeg.so* ${DIR}/build/python/lib
 
 #find ${DIR}/build -name "*musl"'
 #sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/current/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
