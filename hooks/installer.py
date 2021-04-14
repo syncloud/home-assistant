@@ -20,6 +20,7 @@ class Installer:
         self.app_dir = paths.get_app_dir(APP_NAME)
         self.common_dir = paths.get_data_dir(APP_NAME)
         self.snap_data_dir = os.environ['SNAP_DATA']
+        self.config_path = join(self.snap_data_dir, 'config')
 
     def install_config(self):
 
@@ -33,7 +34,7 @@ class Installer:
         storage.init_storage(APP_NAME, USER_NAME)
 
         templates_path = join(self.app_dir, 'config.templates')
-        config_path = join(self.snap_data_dir, 'config')
+        
 
         variables = {
             'app': APP_NAME,
@@ -41,14 +42,14 @@ class Installer:
             'common_dir': self.common_dir,
             'snap_data': self.snap_data_dir
         }
-        gen.generate_files(templates_path, config_path, variables)
+        gen.generate_files(templates_path, self.config_path, variables)
         fs.chownpath(self.snap_data_dir, USER_NAME, recursive=True)
         fs.chownpath(self.common_dir, USER_NAME, recursive=True)
 
     def install(self):
         self.install_config()
-
-        with open("{}/.install-id".format(self.snap_data_dir), 'w') as the_file:
+        install_id_file = join(self.config_path, 'home-assistant', '.install-id')
+        with open(install_id_file, 'w') as the_file:
             the_file.write(str(uuid.uuid4()))
 
     def refresh(self):
