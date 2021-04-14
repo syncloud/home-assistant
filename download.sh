@@ -21,5 +21,6 @@ wget --progress=dot:giga https://github.com/home-assistant/core/archive/refs/tag
 tar xf ${VERSION}.tar.gz
 mv core-${VERSION} core-src
 
-
-#apt-get install -y libffi-dev libssl-dev libjpeg-dev zlib1g-dev autoconf build-essential libopenjp2-7 libtiff5
+wget https://github.com/efficiosoft/ldap-auth-sh/archive/refs/heads/master.tar.gz
+tar xf master.tar.gz
+mv ldap-aith-sh-master ldap-auth-sh
