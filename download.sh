@@ -23,4 +23,4 @@ mv core-${VERSION} core-src
 
 wget https://github.com/efficiosoft/ldap-auth-sh/archive/refs/heads/master.tar.gz
 tar xf master.tar.gz
-mv ldap-aith-sh-master ldap-auth-sh
+mv ldap-auth-sh-master ldap-auth-sh
