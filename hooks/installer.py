@@ -5,7 +5,6 @@ import shutil
 
 from syncloudlib import fs, linux, gen, logger
 from syncloudlib.application import paths, storage
-from subprocess import check_output
 import uuid
 
 APP_NAME = 'home-assistant'

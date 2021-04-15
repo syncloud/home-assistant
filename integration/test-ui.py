@@ -6,7 +6,7 @@ from syncloudlib.integration.hosts import add_host_alias_by_ip
 
 DIR = dirname(__file__)
 TMP_DIR = '/tmp/syncloud/ui'
-PASSWORD='Ngpqy8Bfk123'
+
 
 @pytest.fixture(scope="session")
 def module_setup(request, device, artifact_dir, ui_mode):
@@ -30,10 +30,10 @@ def test_index(selenium):
     selenium.screenshot('index')
 
 
-def test_login(selenium):
-    login = selenium.find_by_xpath("//button[contains(.,'Log In')]")
-    selenium.find_by_id("masterPassword").send_keys(PASSWORD)
+def test_login(selenium, device_user, device_password):
+    selenium.find_by_xpath("//iron-input[@id='input-1']/input").send_keys(device_user)
+    selenium.find_by_xpath("//iron-input[@id='input-2']/input").send_keys(device_password)
     selenium.screenshot('login-credentials')
-    login.click()
-    selenium.find_by_xpath("//a[text()='My Vault']")
+    selenium.find_by_id("button").click()
+    selenium.find_by_xpath("//div[contains(text(),'Home')]")
     selenium.screenshot('main')
