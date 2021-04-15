@@ -11,9 +11,9 @@ tts:
 
 homeassistant:
   auth_providers:
-  - type: command_line
-    command: /snap/home-assistant/current/ldap-auth-sh/ldap-auth.sh
-    args: ["/var/snap/home-assistant/current/config/ldap-auth.cfg"]
+    - type: command_line
+      command: /snap/home-assistant/current/ldap-auth-sh/ldap-auth.sh
+      args: ["/var/snap/home-assistant/current/config/ldap-auth.cfg"]
 #   Uncomment and see below if you want the Home Assistant
 #  user to be populated with his full name.
 #   meta: true
