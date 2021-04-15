@@ -1,6 +1,7 @@
 import logging
 import os
 from os.path import join, isfile
+import shutil
 
 from syncloudlib import fs, linux, gen, logger
 from syncloudlib.application import paths, storage
@@ -20,7 +21,8 @@ class Installer:
         self.app_dir = paths.get_app_dir(APP_NAME)
         self.common_dir = paths.get_data_dir(APP_NAME)
         self.snap_data_dir = os.environ['SNAP_DATA']
-        self.config_path = join(self.snap_data_dir, 'config')
+        self.config_dir = join(self.snap_data_dir, 'config')
+        self.ha_config_dir = join(self.snap_data_dir, 'ha.config')
 
     def install_config(self):
 
@@ -29,12 +31,10 @@ class Installer:
         
         fs.makepath(join(self.common_dir, 'log'))
         fs.makepath(join(self.common_dir, 'nginx'))
-        # fs.makepath(join(self.snap_data_dir, 'data'))
 
         storage.init_storage(APP_NAME, USER_NAME)
 
         templates_path = join(self.app_dir, 'config.templates')
-        
 
         variables = {
             'app': APP_NAME,
@@ -42,13 +42,15 @@ class Installer:
             'common_dir': self.common_dir,
             'snap_data': self.snap_data_dir
         }
-        gen.generate_files(templates_path, self.config_path, variables)
+        gen.generate_files(templates_path, self.config_dir, variables)
         fs.chownpath(self.snap_data_dir, USER_NAME, recursive=True)
         fs.chownpath(self.common_dir, USER_NAME, recursive=True)
 
     def install(self):
         self.install_config()
-        install_id_file = join(self.config_path, 'home-assistant', '.install-id')
+        shutil.copytree(join(self.config_dir, 'default'), join(self.ha_config_dir))
+        fs.chownpath(self.ha_config_dir, USER_NAME, recursive=True)
+        install_id_file = join(self.ha_config_dir, '.install-id')
         with open(install_id_file, 'w') as the_file:
             the_file.write(str(uuid.uuid4()))
 
