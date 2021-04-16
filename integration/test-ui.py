@@ -31,9 +31,39 @@ def test_index(selenium):
 
 
 def test_login(selenium, device_user, device_password):
-    selenium.find_by_xpath("//iron-input[@id='input-1']/input").send_keys(device_user)
-    selenium.find_by_xpath("//iron-input[@id='input-2']/input").send_keys(device_password)
+    selenium.driver.execute_script(
+        'return document'
+        '.querySelector("ha-authorize").shadowRoot'
+        '.querySelector("ha-auth-flow").shadowRoot'
+        '.querySelector("ha-form").shadowRoot'
+        '.querySelectorAll("ha-form")[0].shadowRoot'
+        '.querySelector("ha-form-string").shadowRoot'
+        '.querySelector("paper-input").shadowRoot'
+        '.querySelector("paper-input-container iron-input input")'
+    ).send_keys(device_user)
+
+    selenium.driver.execute_script(
+        'return document'
+        '.querySelector("ha-authorize").shadowRoot'
+        '.querySelector("ha-auth-flow").shadowRoot'
+        '.querySelector("ha-form").shadowRoot'
+        '.querySelectorAll("ha-form")[1].shadowRoot'
+        '.querySelector("ha-form-string").shadowRoot'
+        '.querySelector("paper-input").shadowRoot'
+        '.querySelector("paper-input-container iron-input input")'
+    ).send_keys(device_password)
     selenium.screenshot('login-credentials')
-    selenium.find_by_id("button").click()
-    selenium.find_by_xpath("//div[contains(text(),'Home')]")
+
+    selenium.driver.execute_script(
+        'return document'
+        '.querySelector("ha-authorize").shadowRoot'
+        '.querySelector("ha-auth-flow").shadowRoot'
+        '.querySelector("mwc-button").shadowRoot'
+        '.querySelector("button")'
+    ).click()
     selenium.screenshot('main')
+
+
+def expand_shadow_element(driver, element):
+    shadow_root = driver.execute_script('return arguments[0].shadowRoot', element)
+    return shadow_root
