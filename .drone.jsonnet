@@ -43,7 +43,7 @@ local build(arch) = {
             name: "test-integration",
             image: "python:alpine3.13",
             commands: [
-              "apk update && apk add python3-dev gcc libc-dev libffi-dev rust",
+              "apk update && apk add python3-dev gcc libc-dev libffi-dev rust cargo",
               "pip install -r dev_requirements.txt",
               "APP_ARCHIVE_PATH=$(realpath $(cat package.name))",
               "DOMAIN=$(cat domain)",
