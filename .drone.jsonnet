@@ -52,9 +52,9 @@ local build(arch) = {
         }] + ( if arch == "arm" then [] else [
         {
             name: "test-ui-desktop",
-            image: "syncloud/build-deps-" + arch + ":2021.4.1",
+            image: "python:alpine3.13",
             commands:  [
-              "pip2 install -r dev_requirements.txt",
+              "pip install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
               "py.test -x -s test-ui.py --ui-mode=desktop --domain=$DOMAIN --device-host=device --app=" + name,
@@ -167,4 +167,3 @@ local build(arch) = {
     build("arm"),
     build("amd64")
 ]
-
