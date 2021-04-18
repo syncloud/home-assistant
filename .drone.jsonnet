@@ -136,7 +136,7 @@ local build(arch) = {
         }
     ] + if arch == "arm" then [] else [{
             name: "selenium",
-            image: "selenium/standalone-firefox:4.0.0-beta-3-prerelease-20210402",
+            image: "selenium/standalone-chrome:4.0.0-beta-1-20210215",
             volumes: [{
                 name: "shm",
                 path: "/dev/shm"
@@ -167,3 +167,4 @@ local build(arch) = {
     build("arm"),
     build("amd64")
 ]
+
