@@ -41,9 +41,9 @@ local build(arch) = {
         },
         {
             name: "test-integration",
-            image: "syncloud/build-deps-" + arch + ":2021.4.1",
+            image: "python:alpine3.13",
             commands: [
-              "pip2 install -r dev_requirements.txt",
+              "pip install -r dev_requirements.txt",
               "APP_ARCHIVE_PATH=$(realpath $(cat package.name))",
               "DOMAIN=$(cat domain)",
               "cd integration",
