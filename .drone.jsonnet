@@ -54,7 +54,8 @@ local build(arch) = {
         {
             name: "test-ui-desktop",
             image: "python:alpine3.13",
-            commands:  [
+            commands: [
+              "apk update && apk add python3-dev gcc libc-dev libffi-dev rust cargo libressl-dev sshpass openssh-client",
               "pip install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
@@ -67,9 +68,10 @@ local build(arch) = {
         },
         {
             name: "test-ui-mobile",
-            image: "syncloud/build-deps-" + arch + ":2021.4.1",
+            image: "python:alpine3.13",
             commands: [
-              "pip2 install -r dev_requirements.txt",
+              "apk update && apk add python3-dev gcc libc-dev libffi-dev rust cargo libressl-dev sshpass openssh-client",
+              "pip install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
               "py.test -x -s test-ui.py --ui-mode=mobile --domain=$DOMAIN --device-host=device --app=" + name,
