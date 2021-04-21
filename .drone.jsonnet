@@ -1,4 +1,5 @@
 local name = "home-assistant";
+local browser = "firefox";
 
 local build(arch) = {
     kind: "pipeline",
@@ -59,7 +60,7 @@ local build(arch) = {
               "pip install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
-              "py.test -x -s test-ui.py --ui-mode=desktop --domain=$DOMAIN --device-host=device --app=" + name,
+              "py.test -x -s test-ui.py --ui-mode=desktop --domain=$DOMAIN --device-host=device --app=" + name + " --browser=" + browser,
             ],
             volumes: [{
                 name: "shm",
@@ -139,7 +140,7 @@ local build(arch) = {
         }
     ] + if arch == "arm" then [] else [{
             name: "selenium",
-            image: "selenium/standalone-firefox:4.0.0-beta-3-prerelease-20210402",
+            image: "selenium/standalone-" + browser + ":4.0.0-beta-3-prerelease-20210402",
             volumes: [{
                 name: "shm",
                 path: "/dev/shm"
