@@ -44,7 +44,7 @@ local build(arch) = {
             name: "test-integration",
             image: "python:3.9-buster",
             commands: [
-              "apt-get update && apt-get install -y sshpass openssh-client",
+              "apt-get update && apt-get install -y sshpass openssh-client netcat",
               "pip install -r dev_requirements.txt",
               "APP_ARCHIVE_PATH=$(realpath $(cat package.name))",
               "DOMAIN=$(cat domain)",
