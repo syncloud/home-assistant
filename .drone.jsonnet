@@ -42,9 +42,9 @@ local build(arch) = {
         },
         {
             name: "test-integration",
-            image: "python:alpine3.13",
+            image: "python:3.9-buster",
             commands: [
-              "apk update && apk add python3-dev gcc libc-dev libffi-dev rust cargo libressl-dev sshpass openssh-client",
+              "apt-get update && apt-get install -y sshpass openssh-client",
               "pip install -r dev_requirements.txt",
               "APP_ARCHIVE_PATH=$(realpath $(cat package.name))",
               "DOMAIN=$(cat domain)",
@@ -54,9 +54,9 @@ local build(arch) = {
         }] + ( if arch == "arm" then [] else [
         {
             name: "test-ui-desktop",
-            image: "python:alpine3.13",
+            image: "python:3.9-buster",
             commands: [
-              "apk update && apk add python3-dev gcc libc-dev libffi-dev rust cargo libressl-dev sshpass openssh-client",
+              "apt-get update && apt-get install -y sshpass openssh-client",
               "pip install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
@@ -69,9 +69,9 @@ local build(arch) = {
         },
         {
             name: "test-ui-mobile",
-            image: "python:alpine3.13",
+            image: "python:3.9-buster",
             commands: [
-              "apk update && apk add python3-dev gcc libc-dev libffi-dev rust cargo libressl-dev sshpass openssh-client",
+              "apt-get update && apt-get install -y sshpass openssh-client",
               "pip install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",

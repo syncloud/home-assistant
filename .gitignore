@@ -1,1 +1,4 @@
 venv
+.drone.yml
+package.name
+domain
