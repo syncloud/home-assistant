@@ -1,5 +1,5 @@
 local name = "home-assistant";
-local browser = "firefox";
+local browser = "chrome";
 
 local build(arch) = {
     kind: "pipeline",
