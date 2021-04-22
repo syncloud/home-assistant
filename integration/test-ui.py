@@ -71,4 +71,12 @@ def test_main(selenium):
              '.querySelector("app-toolbar")' \
              '.querySelector("div")' \
              '.textContent'
-    WebDriverWait(selenium.driver, 30).until(lambda d: d.execute_script(header) == 'Home')
+
+    def predicate(driver):
+        try:
+            return driver.execute_script(header) == 'Home'
+        except Exception as e:
+            print(str(e))
+            return False
+
+    WebDriverWait(selenium.driver, 30).until(predicate)
