@@ -2,6 +2,7 @@ from os.path import dirname, join
 from subprocess import check_output
 
 import pytest
+from selenium.webdriver.support.wait import WebDriverWait
 from syncloudlib.integration.hosts import add_host_alias_by_ip
 
 DIR = dirname(__file__)
@@ -58,12 +59,16 @@ def test_login(selenium, device_user, device_password):
         'return document'
         '.querySelector("ha-authorize").shadowRoot'
         '.querySelector("ha-auth-flow").shadowRoot'
-        '.querySelector("mwc-button").shadowRoot'
-        '.querySelector("button")'
+        '.querySelector("mwc-button")'
     ).click()
-    selenium.screenshot('main')
 
 
-def expand_shadow_element(driver, element):
-    shadow_root = driver.execute_script('return arguments[0].shadowRoot', element)
-    return shadow_root
+def test_main(selenium):
+    header = 'return document.querySelector("home-assistant").shadowRoot' \
+             '.querySelector("home-assistant-main").shadowRoot' \
+             '.querySelector("ha-panel-lovelace").shadowRoot' \
+             '.querySelector("hui-root").shadowRoot' \
+             '.querySelector("app-toolbar")' \
+             '.querySelector("div")' \
+             '.textContent'
+    WebDriverWait(selenium.driver, 30).until(lambda d: d.execute_script(header) == 'Home')
