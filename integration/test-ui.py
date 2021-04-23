@@ -80,3 +80,4 @@ def test_main(selenium):
             return False
 
     WebDriverWait(selenium.driver, 30).until(predicate)
+    selenium.screenshot('main')
