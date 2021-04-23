@@ -44,7 +44,7 @@ local build(arch) = {
             name: "test-integration",
             image: "python:3.9-buster",
             commands: [
-              "apt-get update && apt-get install -y sshpass openssh-client netcat",
+              "apt-get update && apt-get install -y sshpass openssh-client netcat rustc",
               "pip install -r dev_requirements.txt",
               "APP_ARCHIVE_PATH=$(realpath $(cat package.name))",
               "DOMAIN=$(cat domain)",
@@ -75,7 +75,7 @@ local build(arch) = {
               "pip install -r dev_requirements.txt",
               "DOMAIN=$(cat domain)",
               "cd integration",
-              "py.test -x -s test-ui.py --ui-mode=mobile --domain=$DOMAIN --device-host=device --app=" + name,
+              "py.test -x -s test-ui.py --ui-mode=mobile --domain=$DOMAIN --device-host=device --app=" + name + " --browser=" + browser,
             ],
             volumes: [{
                 name: "shm",
