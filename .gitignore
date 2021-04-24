@@ -2,3 +2,4 @@ venv
 .drone.yml
 package.name
 domain
+.idea
