@@ -67,6 +67,11 @@ def test_index(app_domain, device_session):
     wait_for_rest(device_session, 'https://{0}'.format(app_domain), 200)
 
 
+def test_refresh(app_archive_path, device_host, device_session, device_password):
+    local_install(device_host, device_password, app_archive_path)
+    wait_for_installer(device_session, device_host)
+
+
 def test_remove(device, app):
     response = device.app_remove(app)
     assert response.status_code == 200, response.text
