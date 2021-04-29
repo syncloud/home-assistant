@@ -1,6 +1,6 @@
 apps:
   server:
-    user: home-assistant
+#    user: home-assistant
     command: bin/service.home-assistant.sh
     daemon: simple
     start-timeout: 600s
