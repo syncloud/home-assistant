@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg-architecture -q DEB_HOST_ARCH)/
+WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg --print-architecture)/
 apt update
 apt install -y libncurses5 libudev-dev build-essential musl cmake libtool-bin groff
 pip install -r /requirements.txt
@@ -44,7 +44,7 @@ cmake -DWITH_JPEG8=1
 make -j4
 make install
 
-$PREFIX=/snap/home-assistant/current
+PREFIX=/snap/home-assistant/current
 mkdir -p $PREFIX
 #mv ${DIR}/build/python /snap/home-assistant/current
 cd $PREFIX
