@@ -6,6 +6,7 @@ apt update
 apt install -y libncurses5 libudev-dev build-essential musl cmake libtool-bin groff
 pip install -r /requirements.txt
 
+mkdir ${DIR}/build
 cd ${DIR}/build
 wget https://github.com/mvanderkolff/jbigkit-packaging/archive/refs/tags/debian/2.1-3.tar.gz
 tar xf 2.1-3.tar.gz
@@ -74,5 +75,5 @@ find $PREFIX -type f -executable -exec sed -i 's|#!.*/bin/python.*|#!'$PREFIX'/p
 sed -i 's|home.*|home = '$PREFIX'/python/bin|g' $PREFIX/pyvenv.cfg
 #rm ${DIR}/build/home-assistant/bin/python3
 #ln -s /snap/home-assistant/current/python/bin/python ${DIR}/build/home-assistant/bin/python3
-
+rm -rf ${DIR}/build
 mv $PREFIX/home-assistant /
