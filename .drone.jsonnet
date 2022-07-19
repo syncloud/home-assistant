@@ -24,13 +24,6 @@ local build(arch, test_ui) = [{
                 "./download.sh"
             ]
         },
-       {
-            name: "build",
-            image: "gcc:10",
-            commands: [
-                "./build.sh"
-            ]
-        },
         {
             name: "package python",
             image: "debian:buster-slim",
