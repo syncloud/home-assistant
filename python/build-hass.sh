@@ -3,7 +3,7 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg --print-architecture)/
 apt update
-apt install -y libncurses5 libudev-dev build-essential musl cmake libtool-bin groff
+apt install -y libncurses5 libudev-dev build-essential musl cmake libtool-bin groff wget
 pip install -r /requirements.txt
 
 mkdir ${DIR}/build
