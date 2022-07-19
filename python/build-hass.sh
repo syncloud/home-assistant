@@ -1,0 +1,78 @@
+#!/bin/bash -e
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg-architecture -q DEB_HOST_ARCH)/
+apt update
+apt install -y libncurses5 libudev-dev build-essential musl cmake libtool-bin groff
+pip install -r /requirements.txt
+
+cd ${DIR}/build
+wget https://github.com/mvanderkolff/jbigkit-packaging/archive/refs/tags/debian/2.1-3.tar.gz
+tar xf 2.1-3.tar.gz
+cd jbigkit-packaging-debian-2.1-3
+for i in debian/patches/*.diff; do patch -p1 < $i; done
+make
+make install
+#cp libjbig/.libs/*.so* ${DIR}/build/python/lib
+
+cd ${DIR}/build
+wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-0.5.2.tar.gz
+tar xf libwebp-0.5.2.tar.gz
+cd libwebp-0.5.2
+./configure #--prefix=${DIR}/build/python
+make -j4
+make install
+
+cd ${DIR}/build
+wget https://download.osgeo.org/libtiff/tiff-4.2.0.tar.gz
+tar xf tiff-4.2.0.tar.gz
+cd tiff-4.2.0
+./configure #--prefix=${DIR}/build/python
+make -j4
+make install
+
+cd ${DIR}/build
+wget https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.0.6.tar.gz
+tar xf 2.0.6.tar.gz
+cd libjpeg-turbo-2.0.6
+cmake 
+#-DCMAKE_INSTALL_PREFIX=${DIR}/build/python
+make -j4
+make install
+cmake -DWITH_JPEG8=1
+#-DCMAKE_INSTALL_PREFIX=${DIR}/build/python -DWITH_JPEG8=1
+make -j4
+make install
+
+$PREFIX=/snap/home-assistant/current
+mkdir -p $PREFIX
+#mv ${DIR}/build/python /snap/home-assistant/current
+cd $PREFIX
+python -m venv home-assistant
+export LD_LIBRARY_PATH=$PREFIX/python/lib
+sed -i 's/include-system-site-packages = false/include-system-site-packages = true/g' home-assistant/pyvenv.cfg
+source home-assistant/bin/activate
+cd ${DIR}/build/core-src
+pip install wheel Cython --constraint homeassistant/package_constraints.txt
+pip install --no-cache-dir --no-index --only-binary=:all: --find-links ${WHEELS_LINKS} -r requirements_all.txt --constraint homeassistant/package_constraints.txt
+pip install .
+cd $PREFIX
+python -c "import homeassistant"
+python -c "import asyncio"
+#mv /snap/home-assistant/current/python ${DIR}/build
+
+#cp /lib/ld-musl-*.so* ${DIR}/build/python/lib
+#ARCH=$(uname -m)
+#if [[ $ARCH == "armv7l" ]]; then
+#    ARCH=armhf
+#fi
+#cp /lib/*-linux-musl*/libc.so ${DIR}/build/python/lib/libc.musl-$ARCH.so.1
+
+#find ${DIR}/build -name "*musl"'
+#sed -i 's|VIRTUAL_ENV=.*|VIRTUAL_ENV=/snap/home-assistant/current/home-assistant|g' ${DIR}/build/home-assistant/bin/activate
+find $PREFIX -type f -executable -exec sed -i 's|#!.*/bin/python.*|#!'$PREFIX'/python/bin/python|g' {} \;
+sed -i 's|home.*|home = '$PREFIX'/python/bin|g' $PREFIX/pyvenv.cfg
+#rm ${DIR}/build/home-assistant/bin/python3
+#ln -s /snap/home-assistant/current/python/bin/python ${DIR}/build/home-assistant/bin/python3
+
+mv $PREFIX/home-assistant /
