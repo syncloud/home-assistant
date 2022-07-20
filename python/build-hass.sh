@@ -3,12 +3,14 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg --print-architecture)/
 apt update
-apt install -y libncurses5 libudev-dev build-essential musl cmake libtool-bin groff wget
+apt install -y libffi-dev libncurses5 libudev-dev build-essential musl cmake libtool-bin groff wget
 pip install -r /requirements.txt
 cd /core-src
 pip install setuptools==57.5.0
 pip install -r requirements.txt
-pip install -r requirements_all.txt
+pip install -r requirements_all.txt --constraint homeassistant/package_constraints.txt
+echo "done"
+exit 1
 PREFIX=/snap/home-assistant/current
 mkdir -p $PREFIX
 
