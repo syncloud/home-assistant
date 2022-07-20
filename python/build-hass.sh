@@ -52,6 +52,7 @@ python -m venv home-assistant
 export LD_LIBRARY_PATH=$PREFIX/python/lib
 sed -i 's/include-system-site-packages = false/include-system-site-packages = true/g' home-assistant/pyvenv.cfg
 source home-assistant/bin/activate
+mv /core-src ${DIR}/build
 cd ${DIR}/build/core-src
 pip install wheel Cython --constraint homeassistant/package_constraints.txt
 pip install --no-cache-dir --no-index --only-binary=:all: --find-links ${WHEELS_LINKS} -r requirements_all.txt --constraint homeassistant/package_constraints.txt
