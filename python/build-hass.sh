@@ -6,6 +6,7 @@ apt update
 apt install -y libncurses5 libudev-dev build-essential musl cmake libtool-bin groff wget
 pip install -r /requirements.txt
 cd /core-src
+pip install setuptools==57.5.0
 pip install -r requirements.txt
 pip install -r requirements_all.txt
 PREFIX=/snap/home-assistant/current
