@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-VERSION=2021.3.4
+VERSION=2022.7.5
 DOWNLOAD_URL=https://github.com/syncloud/3rdparty/releases/download
 ARCH=$(uname -m)
 rm -rf ${DIR}/build
