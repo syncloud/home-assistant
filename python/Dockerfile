@@ -1,6 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.8-slim-buster
 COPY requirements.txt /
-COPY core-src /core-src/
-COPY build-hass.sh /
-RUN /build-hass.sh
+RUN pip install -r /requirements.txt
 RUN rm -rf /var/lib/apt/lists/*

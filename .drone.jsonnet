@@ -25,6 +25,24 @@ local build(arch, test_ui) = [{
             ]
         },
         {
+            name: "build",
+            image: "debian:buster-slim",
+            image: "homeassistant/home-assistant:2022.7",
+            commands: [
+                "./home-assistant/build.sh"
+            ],
+            volumes: [
+                {
+                    name: "docker",
+                    path: "/usr/bin/docker"
+                },
+                {
+                    name: "docker.sock",
+                    path: "/var/run/docker.sock"
+                }
+            ]
+        },
+        {
             name: "package python",
             image: "debian:buster-slim",
             commands: [
