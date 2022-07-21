@@ -4,7 +4,9 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WHEELS_LINKS=https://wheels.home-assistant.io/alpine-3.12/$(dpkg --print-architecture)/
 apt update
 apt install -y libffi-dev libncurses5 libudev-dev build-essential musl cmake libtool-bin groff wget
-#pip install -r /requirements.txt
+pip install -r /requirements.txt
+python -m venv venv
+source venv/bin/activate
 cd /core-src
 pip install setuptools==57.5.0
 pip install -r requirements.txt --constraint homeassistant/package_constraints.txt
