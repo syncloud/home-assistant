@@ -3,3 +3,4 @@ venv
 package.name
 domain
 .idea
+__pycache__
