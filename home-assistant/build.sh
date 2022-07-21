@@ -9,7 +9,6 @@ BUILD_DIR=${DIR}/../build/snap/home-assistant
 docker ps -a -q --filter ancestor=home-assistant:syncloud --format="{{.ID}}" | xargs docker stop | xargs docker rm || true
 docker rmi home-assistant:syncloud || true
 docker build -t home-assistant:syncloud .
-docker run home-assistant:syncloud home-assistant --help
 docker create --name=home-assistant home-assistant:syncloud
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}
