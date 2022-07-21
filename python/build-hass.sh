@@ -9,8 +9,9 @@ python -m venv venv
 source venv/bin/activate
 cd /core-src
 pip install setuptools==57.5.0
-pip install -r requirements.txt --constraint homeassistant/package_constraints.txt
-pip install -r requirements_all.txt --constraint homeassistant/package_constraints.txt
+pip install wheel Cython --constraint homeassistant/package_constraints.txt
+pip install --no-cache-dir --no-index --only-binary=:all: --find-links ${WHEELS_LINKS} -r requirements_all.txt --constraint homeassistant/package_constraints.txt
+pip install .
 echo "done"
 exit 1
 PREFIX=/snap/home-assistant/current
