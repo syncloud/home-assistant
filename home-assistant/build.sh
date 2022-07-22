@@ -17,5 +17,5 @@ docker ps -a -q --filter ancestor=home-assistant:syncloud --format="{{.ID}}" | x
 docker rmi home-assistant:syncloud || true
 tar xf app.tar
 rm -rf app.tar
-sed -i '#import sys#a sys.executable = /snap/home-assistant/current/home-assistant/bin/python' ${BUILD_DIR}/usr/src/homeassistant/homeassistant/__main__.py
+sed -i '/import sys/a sys.executable = "/snap/home-assistant/current/home-assistant/bin/python"' ${BUILD_DIR}/usr/src/homeassistant/homeassistant/__main__.py
 cp ${DIR}/python ${BUILD_DIR}/bin/
