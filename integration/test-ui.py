@@ -34,37 +34,12 @@ def test_index(selenium):
 def test_login(selenium, device_user, device_password):
     username = selenium.find_by_id('username')
     username.send_keys(device_user)
-    #selenium.driver.execute_script(
-    #    'return document'
-    #    '.querySelector("ha-authorize").shadowRoot'
-    #    '.querySelector("ha-auth-flow").shadowRoot'
-    #    '.querySelector("ha-form").shadowRoot'
-    #    '.querySelectorAll("ha-form")[0].shadowRoot'
-    #    '.querySelector("ha-form-string").shadowRoot'
-    #    '.querySelector("paper-input").shadowRoot'
-    #    '.querySelector("paper-input-container iron-input input")'
-    #).send_keys(device_user)
     password = selenium.find_by_id('password')
     password.send_keys(device_password)
+    submit = selenium.find_by_css('//input[@type="submit"]')
+    submit.click()
 
-    selenium.driver.execute_script(
-        'return document'
-        '.querySelector("ha-authorize").shadowRoot'
-        '.querySelector("ha-auth-flow").shadowRoot'
-        '.querySelector("ha-form").shadowRoot'
-        '.querySelectorAll("ha-form")[1].shadowRoot'
-        '.querySelector("ha-form-string").shadowRoot'
-        '.querySelector("paper-input").shadowRoot'
-        '.querySelector("paper-input-container iron-input input")'
-    ).send_keys(device_password)
     selenium.screenshot('login-credentials')
-
-    selenium.driver.execute_script(
-        'return document'
-        '.querySelector("ha-authorize").shadowRoot'
-        '.querySelector("ha-auth-flow").shadowRoot'
-        '.querySelector("mwc-button")'
-    ).click()
 
 
 def test_main(selenium):
