@@ -64,3 +64,7 @@ def test_main(selenium):
     WebDriverWait(selenium.driver, 30).until(predicate)
     selenium.screenshot('main')
 
+
+def test_teardown(driver):
+    driver.quit()
+
