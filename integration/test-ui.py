@@ -3,7 +3,7 @@ from subprocess import check_output
 
 import pytest
 from selenium.webdriver.support.wait import WebDriverWait
-from syncloudlib.integration.hosts import add_host_alias_by_ip
+from syncloudlib.integration.hosts import add_host_alias
 
 DIR = dirname(__file__)
 TMP_DIR = '/tmp/syncloud/ui'
@@ -23,7 +23,7 @@ def module_setup(request, device, artifact_dir, ui_mode):
 
 
 def test_start(module_setup, app, domain, device_host):
-    add_host_alias_by_ip(app, domain, device_host)
+    add_host_alias(app, domain, device_host)
 
 
 def test_index(selenium):
