@@ -36,10 +36,11 @@ def test_login(selenium, device_user, device_password):
     username.send_keys(device_user)
     password = selenium.find_by_id('password')
     password.send_keys(device_password)
-    submit = selenium.find_by_css('//input[@type="submit"]')
+    selenium.screenshot('login-credentials')
+    submit = selenium.find_by_css('//input[type="submit"]')
     submit.click()
 
-    selenium.screenshot('login-credentials')
+    selenium.screenshot('login-submitted')
 
 
 def test_main(selenium):
@@ -60,3 +61,4 @@ def test_main(selenium):
 
     WebDriverWait(selenium.driver, 30).until(predicate)
     selenium.screenshot('main')
+
