@@ -37,7 +37,7 @@ def test_login(selenium, device_user, device_password):
     password = selenium.find_by_id('password')
     password.send_keys(device_password)
     selenium.screenshot('login-credentials')
-    submit = selenium.find_by_css('//input[type="submit"]')
+    submit = selenium.find_by_xpath('//input[@type="submit"]')
     submit.click()
 
     selenium.screenshot('login-submitted')
