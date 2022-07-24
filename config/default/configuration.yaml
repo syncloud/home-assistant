@@ -15,3 +15,9 @@ homeassistant:
       command: /snap/home-assistant/current/ldap-auth-sh/ldap-auth.sh
       args: ["/var/snap/home-assistant/current/config/ldap-auth-sh.cfg"]
       meta: true
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1

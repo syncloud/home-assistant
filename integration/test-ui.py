@@ -3,7 +3,8 @@ from subprocess import check_output
 
 import pytest
 from selenium.webdriver.support.wait import WebDriverWait
-from syncloudlib.integration.hosts import add_host_alias_by_ip
+from syncloudlib.integration.hosts import add_host_alias
+from selenium.webdriver.common.keys import Keys
 
 DIR = dirname(__file__)
 TMP_DIR = '/tmp/syncloud/ui'
@@ -23,7 +24,7 @@ def module_setup(request, device, artifact_dir, ui_mode):
 
 
 def test_start(module_setup, app, domain, device_host):
-    add_host_alias_by_ip(app, domain, device_host)
+    add_host_alias(app, domain, device_host)
 
 
 def test_index(selenium):
@@ -32,35 +33,16 @@ def test_index(selenium):
 
 
 def test_login(selenium, device_user, device_password):
-    selenium.driver.execute_script(
-        'return document'
-        '.querySelector("ha-authorize").shadowRoot'
-        '.querySelector("ha-auth-flow").shadowRoot'
-        '.querySelector("ha-form").shadowRoot'
-        '.querySelectorAll("ha-form")[0].shadowRoot'
-        '.querySelector("ha-form-string").shadowRoot'
-        '.querySelector("paper-input").shadowRoot'
-        '.querySelector("paper-input-container iron-input input")'
-    ).send_keys(device_user)
-
-    selenium.driver.execute_script(
-        'return document'
-        '.querySelector("ha-authorize").shadowRoot'
-        '.querySelector("ha-auth-flow").shadowRoot'
-        '.querySelector("ha-form").shadowRoot'
-        '.querySelectorAll("ha-form")[1].shadowRoot'
-        '.querySelector("ha-form-string").shadowRoot'
-        '.querySelector("paper-input").shadowRoot'
-        '.querySelector("paper-input-container iron-input input")'
-    ).send_keys(device_password)
+    username = selenium.find_by_id('username')
+    username.send_keys(device_user)
+    password = selenium.find_by_id('password')
+    password.send_keys(device_password)
     selenium.screenshot('login-credentials')
+    password.send_keys(Keys.RETURN)
+    #submit = selenium.find_by_xpath('//input[@type="submit"]')
+    #submit.click()
 
-    selenium.driver.execute_script(
-        'return document'
-        '.querySelector("ha-authorize").shadowRoot'
-        '.querySelector("ha-auth-flow").shadowRoot'
-        '.querySelector("mwc-button")'
-    ).click()
+    selenium.screenshot('login-submitted')
 
 
 def test_main(selenium):
@@ -81,3 +63,8 @@ def test_main(selenium):
 
     WebDriverWait(selenium.driver, 30).until(predicate)
     selenium.screenshot('main')
+
+
+def test_teardown(driver):
+    driver.quit()
+
