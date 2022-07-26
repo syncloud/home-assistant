@@ -5,7 +5,8 @@ import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 from syncloudlib.integration.hosts import add_host_alias
 from selenium.webdriver.common.keys import Keys
-import lib
+import integration.lib
+
 
 DIR = dirname(__file__)
 TMP_DIR = '/tmp/syncloud/ui'
