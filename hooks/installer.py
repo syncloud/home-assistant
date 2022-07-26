@@ -47,7 +47,7 @@ class Installer:
 
     def install(self):
         self.install_config()
-        shutil.copytree(join(self.config_dir, 'default'), join(self.ha_config_dir))
+        shutil.copytree(join(self.config_dir, 'default'), self.ha_config_dir)
         fs.chownpath(self.ha_config_dir, USER_NAME, recursive=True)
         install_id_file = join(self.ha_config_dir, '.install-id')
         with open(install_id_file, 'w') as the_file:
@@ -55,7 +55,8 @@ class Installer:
 
     def refresh(self):
         self.install_config()
-        
+        shutil.copy(join(self.config_dir, 'default/configuration.yaml'), self.ha_config_dir)
+
     def configure(self):
         self.prepare_storage()
         install_file = join(self.common_dir, 'installed')
