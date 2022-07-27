@@ -5,6 +5,8 @@ import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 from syncloudlib.integration.hosts import add_host_alias
 from selenium.webdriver.common.keys import Keys
+from integration import lib
+
 
 DIR = dirname(__file__)
 TMP_DIR = '/tmp/syncloud/ui'
@@ -27,22 +29,8 @@ def test_start(module_setup, app, domain, device_host):
     add_host_alias(app, domain, device_host)
 
 
-def test_index(selenium):
-    selenium.open_app()
-    selenium.screenshot('index')
-
-
 def test_login(selenium, device_user, device_password):
-    username = selenium.find_by_id('username')
-    username.send_keys(device_user)
-    password = selenium.find_by_id('password')
-    password.send_keys(device_password)
-    selenium.screenshot('login-credentials')
-    password.send_keys(Keys.RETURN)
-    #submit = selenium.find_by_xpath('//input[@type="submit"]')
-    #submit.click()
-
-    selenium.screenshot('login-submitted')
+    lib.login(selenium, device_user, device_password)
 
 
 def test_main(selenium):
@@ -67,4 +55,3 @@ def test_main(selenium):
 
 def test_teardown(driver):
     driver.quit()
-
