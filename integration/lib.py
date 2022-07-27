@@ -10,7 +10,3 @@ def login(selenium, device_user, device_password):
     selenium.screenshot('login-credentials')
     password.send_keys(Keys.RETURN)
     selenium.screenshot('login-submitted')
-password)
-    selenium.screenshot('login-credentials')
-    password.send_keys(Keys.RETURN)
-    selenium.screenshot('login-submitted')
