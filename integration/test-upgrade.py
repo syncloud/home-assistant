@@ -1,7 +1,7 @@
 import pytest
 from subprocess import check_output
 from syncloudlib.integration.hosts import add_host_alias
-import integration.lib
+from integration import lib
 
 TMP_DIR = '/tmp/syncloud'
 

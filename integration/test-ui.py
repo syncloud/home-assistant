@@ -5,7 +5,7 @@ import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 from syncloudlib.integration.hosts import add_host_alias
 from selenium.webdriver.common.keys import Keys
-import integration.lib
+from integration import lib
 
 
 DIR = dirname(__file__)
