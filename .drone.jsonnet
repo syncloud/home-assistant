@@ -45,7 +45,6 @@ local build(arch, test_ui) = [{
             name: "package python",
             image: "debian:buster-slim",
             commands: [
-                "mv build/core-src python",
                 "./python/build.sh"
             ],
             volumes: [
