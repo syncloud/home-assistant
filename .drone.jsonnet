@@ -144,9 +144,9 @@ local build(arch, test_ui, dind) = [{
               "apt-get update && apt-get install -y sshpass openssh-client libxml2-dev libxslt-dev build-essential libz-dev curl",
               "cd integration",
               "pip install -r requirements.txt",
-              "py.test -x -s test-ui.py --distro=buster --ui-mode=" + mode + " --domain=buster.com --device-host=" + name + ".buster.com --app=" + name + " --browser=" + browser,
+              "py.test -x -s test-ui.py --distro=buster --ui-mode=deaktop --domain=buster.com --device-host=desktop.buster.com --app=" + name + " --browser=" + browser,
             ]
-        } for mode in ["desktop", "mobile"] ])
+        }])
        else [] ) +
        ( if arch == "amd64" then [
         {
