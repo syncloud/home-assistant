@@ -1,7 +1,13 @@
 local name = "home-assistant";
 local browser = "chrome";
+local nginx = '1.24.0';
+local version = "1.32.7";
+local browser = "firefox";
+local platform = '24.05';
+local selenium = '4.21.0-20240517';
+local deployer = "https://github.com/syncloud/store/releases/download/4/syncloud-release";
 
-local build(arch, test_ui) = [{
+local build(arch, test_ui, dind) = [{
     kind: "pipeline",
     type: "docker",
     name: arch,
@@ -17,6 +23,22 @@ local build(arch, test_ui) = [{
                 "echo $DRONE_BUILD_NUMBER > version"
             ]
         },
+
+{
+      name: 'nginx',
+      image: 'nginx:' + nginx,
+      commands: [
+        './nginx/build.sh',
+      ],
+    },
+{
+      name: 'nginx test',
+      image: 'syncloud/platform-buster-' + arch + ':' + platform,
+      commands: [
+        './nginx/test.sh',
+      ],
+    },
+       
         {
             name: "download",
             image: "debian:buster-slim",
@@ -25,8 +47,8 @@ local build(arch, test_ui) = [{
             ]
         },
         {
-            name: "build",
-            image: "debian:buster-slim",
+            name: "home assistant",
+            image: "docker:" + dind,
             commands: [
                 "./home-assistant/build.sh"
             ],
@@ -78,8 +100,27 @@ local build(arch, test_ui) = [{
         }] +
         ( if test_ui then ([
         {
+            name: "selenium",
+            image: "selenium/standalone-" + browser + ":" + selenium,
+            detach: true,
+            environment: {
+                SE_NODE_SESSION_TIMEOUT: "999999",
+                START_XVFB: "true"
+            },
+               volumes: [{
+                name: "shm",
+                path: "/dev/shm"
+            }],
+            commands: [
+                "cat /etc/hosts",
+                "getent hosts " + name + ".buster.com | sed 's/" + name +".buster.com/auth.buster.com/g' | sudo tee -a /etc/hosts",
+                "cat /etc/hosts",
+                "/opt/bin/entry_point.sh"
+            ]
+         },
+        {
             name: "selenium-video",
-            image: "selenium/video:ffmpeg-4.3.1-20220208",
+            image: "selenium/video:ffmpeg-6.1.1-20240621",
             detach: true,
             environment: {
                 "DISPLAY_CONTAINER_NAME": "selenium",
@@ -95,8 +136,8 @@ local build(arch, test_ui) = [{
                     path: "/videos"
                 }
             ]
-        }] +
-        [{
+        },
+{
             name: "test-ui-" + mode,
             image: "python:3.8-slim-buster",
             commands: [
@@ -183,6 +224,17 @@ local build(arch, test_ui) = [{
           ]
         },
         services: [
+   {
+            name: "docker",
+            image: "docker:" + dind,
+            privileged: true,
+            volumes: [
+                {
+                    name: "dockersock",
+                    path: "/var/run"
+                }
+            ]
+        },
             {
                 name: name + ".buster.com",
                 image: "syncloud/platform-buster-" + arch + ":22.01",
@@ -198,19 +250,7 @@ local build(arch, test_ui) = [{
                     }
                 ]
             }
-        ] + ( if test_ui then [
-            {
-                name: "selenium",
-                image: "selenium/standalone-" + browser + ":4.1.2-20220208",
-                environment: {
-                    SE_NODE_SESSION_TIMEOUT: "999999"
-                },
-                volumes: [{
-                    name: "shm",
-                    path: "/dev/shm"
-                }]
-            }
-        ] else [] ),
+        ],
         volumes: [
             {
                 name: "dbus",
@@ -232,18 +272,11 @@ local build(arch, test_ui) = [{
                 name: "videos",
                 temp: {}
             },
+           
             {
-                name: "docker",
-                host: {
-                    path: "/usr/bin/docker"
-                }
-            },
-            {
-                name: "docker.sock",
-                host: {
-                    path: "/var/run/docker.sock"
-                }
-            }
+            name: "dockersock",
+            temp: {}
+        },
         ]
     },
     {
@@ -282,7 +315,6 @@ local build(arch, test_ui) = [{
      }
 ];
 
-build("amd64", true) +
-build("arm64", false) +
-build("arm", false)
-
+build("amd64", true, "20.10.21-dind") +
+build("arm64", false, "19.03.8-dind") +
+build("arm", false, "19.03.8-dind")
