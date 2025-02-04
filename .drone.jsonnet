@@ -138,7 +138,7 @@ local build(arch, test_ui, dind) = [{
             ]
         },
 {
-            name: "test-ui-" + mode,
+            name: "test-ui",
             image: "python:3.8-slim-buster",
             commands: [
               "apt-get update && apt-get install -y sshpass openssh-client libxml2-dev libxslt-dev build-essential libz-dev curl",
