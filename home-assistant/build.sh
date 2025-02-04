@@ -2,8 +2,6 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}
-apt update
-apt install -y libltdl7 libnss3
 
 BUILD_DIR=${DIR}/../build/snap/home-assistant
 while ! docker build -t python:syncloud . ; do
