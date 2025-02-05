@@ -13,9 +13,11 @@ docker create --name=home-assistant home-assistant:syncloud
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}
 docker export home-assistant -o app.tar
-docker ps -a -q --filter ancestor=home-assistant:syncloud --format="{{.ID}}" | xargs docker stop | xargs docker rm || true
-docker rmi home-assistant:syncloud || true
+
 tar xf app.tar
 rm -rf app.tar
 sed -i '/import sys/a sys.executable = "/snap/home-assistant/current/home-assistant/bin/python"' ${BUILD_DIR}/usr/src/homeassistant/homeassistant/__main__.py
+
+sed -i 's#/usr/lib/libturbojpeg.so#/snap/home-assistant/current/home-assistant/usr/lib/libturbojpeg.so#g' ${BUILD_DIR}/usr/local/lib/python3.13/site-packages/turbojpeg.py
+
 cp ${DIR}/python ${BUILD_DIR}/bin/
