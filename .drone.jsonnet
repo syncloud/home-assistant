@@ -180,7 +180,7 @@ local build(arch, test_ui, dind) = [{
         },
         {
             name: "artifact",
-            image: "appleboy/drone-scp:1.6.4',
+            image: "appleboy/drone-scp:1.6.4",
             settings: {
                 host: {
                     from_secret: "artifact_host"
