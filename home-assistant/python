@@ -6,4 +6,5 @@ LIBS=$LIBS:${DIR}/usr/lib
 LIBS=$LIBS:${DIR}/home-assistant/usr/lib
 LIBS=$LIBS:${DIR}/usr/local/lib
 export PYTHONPATH=$DIR/usr/src/homeassistant
+export LD_LIBRARY_PATH=${DIR}/home-assistant/usr/lib
 ${DIR}/lib/ld-musl-*.so* --library-path $LIBS ${DIR}/usr/local/bin/python3 "$@"
