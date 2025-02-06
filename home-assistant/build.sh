@@ -20,4 +20,6 @@ sed -i '/import sys/a sys.executable = "/snap/home-assistant/current/home-assist
 
 sed -i 's#/opt/libjpeg-turbo/lib64/libturbojpeg.so#/snap/home-assistant/current/home-assistant/usr/lib/libturbojpeg.so.0#g' ${BUILD_DIR}/usr/local/lib/python3.13/site-packages/turbojpeg.py
 
-cp ${DIR}/python ${BUILD_DIR}/bin/
+cp ${DIR}/python ${BUILD_DIR}/bin
+cp ${DIR}/ffmpeg ${BUILD_DIR}/bin
+cp ${DIR}/ffprobe ${BUILD_DIR}/bin
