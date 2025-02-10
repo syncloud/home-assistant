@@ -9,5 +9,5 @@ apt -y install wget unzip
 
 wget https://github.com/efficiosoft/ldap-auth-sh/archive/refs/heads/master.tar.gz
 tar xf master.tar.gz
-mv ldap-auth-sh-master ${BUILD_DIR}/ldap-auth-sh
+mv ldap-auth-sh-master ${BUILD_DIR}/snap/ldap-auth-sh
 
