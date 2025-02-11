@@ -145,7 +145,7 @@ local build(arch, test_ui, dind) = [
                                  commands: [
                                    'cd test',
                                    './deps.sh',
-                                   'py.test -x -s ui.py --distro=buster --ui-mode=deaktop --domain=buster.com --device-host=desktop.buster.com --app=' + name + ' --browser=' + browser,
+                                   'py.test -x -s ui.py --distro=buster --ui-mode=desktop --domain=buster.com --device-host=' + name + '.buster.com --app=' + name + ' --browser=' + browser,
                                  ],
                                },
                              ])
@@ -240,7 +240,7 @@ local build(arch, test_ui, dind) = [
       },
       {
         name: name + '.buster.com',
-        image: 'syncloud/platform-buster-' + arch + ':22.01',
+        image: 'syncloud/platform-buster-' + arch + platform,
         privileged: true,
         volumes: [
           {
