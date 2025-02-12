@@ -1,7 +1,7 @@
-import pytest
 from os.path import dirname, join
-from selenium.webdriver.support.wait import WebDriverWait
 from subprocess import check_output
+
+import pytest
 from syncloudlib.integration.hosts import add_host_alias
 
 from test import lib
@@ -33,24 +33,15 @@ def test_login(selenium, device_user, device_password):
 
 
 def test_main(selenium):
-    header = 'return document.querySelector("home-assistant").shadowRoot' \
-             '.querySelector("home-assistant-main").shadowRoot' \
-             '.querySelector("ha-panel-lovelace").shadowRoot' \
-             '.querySelector("hui-root").shadowRoot' \
-             '.querySelector("app-toolbar")' \
-             '.querySelector("div")' \
-             '.textContent'
-
-    def predicate(driver):
-        try:
-            return driver.execute_script(header) == 'Home'
-        except Exception as e:
-            print(str(e))
-            return False
-
-    WebDriverWait(selenium.driver, 30).until(predicate)
+    home = selenium.element_by_js(
+        'document'
+        '.querySelector("body > home-assistant").shadowRoot'
+        '.querySelector("home-assistant-main").shadowRoot'
+        '.querySelector("ha-drawer > partial-panel-resolver > ha-panel-lovelace").shadowRoot'
+        '.querySelector("hui-root").shadowRoot'
+        '.querySelector("#view > hui-view > hui-masonry-view").shadowRoot'
+        '.querySelector("#columns > div > hui-card > hui-empty-state-card").shadowRoot'
+        '.querySelector("ha-card").shadowRoot'
+        '.querySelector("h1")')
+    assert home.text == 'Welcome Home'
     selenium.screenshot('main')
-
-
-def test_teardown(driver):
-    driver.quit()
