@@ -1,0 +1,7 @@
+#!/bin/bash -ex
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
+LIBS=${DIR}/lib
+LIBS=$LIBS:${DIR}/usr/lib
+LIBS=$LIBS:${DIR}/usr/lib/pulseaudio
+
+exec ${DIR}/lib/ld-*.so.* --library-path $LIBS ${DIR}/usr/bin/ffprobe "$@"

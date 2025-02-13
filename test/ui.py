@@ -2,11 +2,9 @@ from os.path import dirname, join
 from subprocess import check_output
 
 import pytest
-from selenium.webdriver.support.wait import WebDriverWait
 from syncloudlib.integration.hosts import add_host_alias
-from selenium.webdriver.common.keys import Keys
-from integration import lib
 
+from test import lib
 
 DIR = dirname(__file__)
 TMP_DIR = '/tmp/syncloud/ui'
@@ -25,8 +23,9 @@ def module_setup(request, device, artifact_dir, ui_mode):
     request.addfinalizer(module_teardown)
 
 
-def test_start(module_setup, app, domain, device_host):
-    add_host_alias(app, domain, device_host)
+def test_start(module_setup, app, domain, device_host, device):
+    add_host_alias(app, device_host, domain)
+    device.activated()
 
 
 def test_login(selenium, device_user, device_password):
@@ -34,24 +33,15 @@ def test_login(selenium, device_user, device_password):
 
 
 def test_main(selenium):
-    header = 'return document.querySelector("home-assistant").shadowRoot' \
-             '.querySelector("home-assistant-main").shadowRoot' \
-             '.querySelector("ha-panel-lovelace").shadowRoot' \
-             '.querySelector("hui-root").shadowRoot' \
-             '.querySelector("app-toolbar")' \
-             '.querySelector("div")' \
-             '.textContent'
-
-    def predicate(driver):
-        try:
-            return driver.execute_script(header) == 'Home'
-        except Exception as e:
-            print(str(e))
-            return False
-
-    WebDriverWait(selenium.driver, 30).until(predicate)
+    home = selenium.element_by_js(
+        'document'
+        '.querySelector("body > home-assistant").shadowRoot'
+        '.querySelector("home-assistant-main").shadowRoot'
+        '.querySelector("ha-drawer > partial-panel-resolver > ha-panel-lovelace").shadowRoot'
+        '.querySelector("hui-root").shadowRoot'
+        '.querySelector("#view > hui-view > hui-masonry-view").shadowRoot'
+        '.querySelector("#columns > div > hui-card > hui-empty-state-card").shadowRoot'
+        '.querySelector("ha-card").shadowRoot'
+        '.querySelector("h1")')
+    assert home.text == 'Welcome Home'
     selenium.screenshot('main')
-
-
-def test_teardown(driver):
-    driver.quit()
