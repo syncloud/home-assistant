@@ -1,12 +1,13 @@
 local name = 'home-assistant';
 local browser = 'chrome';
 local nginx = '1.24.0';
-local version = '1.32.7';
 local browser = 'firefox';
-local platform = '24.05';
-local selenium = '4.21.0-20240517';
+local platform = '25.02';
+local selenium = '4.35.0-20250828';
 local deployer = 'https://github.com/syncloud/store/releases/download/4/syncloud-release';
-local python = '3.9-slim-buster';
+local python = '3.12-slim-bookworm';
+local distro_default = 'bookworm';
+local distros = ['bookworm'];
 
 local build(arch, test_ui, dind) = [
   {
@@ -20,7 +21,7 @@ local build(arch, test_ui, dind) = [
     steps: [
              {
                name: 'version',
-               image: 'debian:buster-slim',
+               image: 'debian:bookworm-slim',
                commands: [
                  'echo $DRONE_BUILD_NUMBER > version',
                ],
@@ -43,7 +44,7 @@ local build(arch, test_ui, dind) = [
 
              {
                name: 'download',
-               image: 'debian:buster-slim',
+               image: 'debian:bookworm-slim',
                commands: [
                  './download.sh',
                ],
@@ -83,82 +84,90 @@ local build(arch, test_ui, dind) = [
              },
              {
                name: 'package',
-               image: 'debian:buster-slim',
+               image: 'debian:bookworm-slim',
                commands: [
                  'VERSION=$(cat version)',
                  './package.sh ' + name + ' $VERSION ',
                ],
              },
+           ] + [
              {
-               name: 'test',
+               name: 'test ' + distro,
                image: 'python:' + python,
                commands: [
-                 'APP_ARCHIVE_PATH=$(realpath $(cat package.name))',
                  'cd test',
                  './deps.sh',
-                 'py.test -x -s test.py --distro=buster --domain=buster.com --app-archive-path=$APP_ARCHIVE_PATH --device-host=' + name + '.buster.com --app=' + name + ' --arch=' + arch,
+                 'py.test -x -s test.py --distro=' + distro + ' --ver=$DRONE_BUILD_NUMBER --app=' + name,
                ],
-             },
-           ] +
-           (if test_ui then ([
-                               {
-                                 name: 'selenium',
-                                 image: 'selenium/standalone-' + browser + ':' + selenium,
-                                 detach: true,
-                                 environment: {
-                                   SE_NODE_SESSION_TIMEOUT: '999999',
-                                   START_XVFB: 'true',
-                                 },
-                                 volumes: [{
-                                   name: 'shm',
-                                   path: '/dev/shm',
-                                 }],
-                                 commands: [
-                                   'cat /etc/hosts',
-                                   'getent hosts ' + name + ".buster.com | sed 's/" + name + ".buster.com/auth.buster.com/g' | sudo tee -a /etc/hosts",
-                                   'cat /etc/hosts',
-                                   '/opt/bin/entry_point.sh',
-                                 ],
-                               },
-                               {
-                                 name: 'selenium-video',
-                                 image: 'selenium/video:ffmpeg-6.1.1-20240621',
-                                 detach: true,
-                                 environment: {
-                                   DISPLAY_CONTAINER_NAME: 'selenium',
-                                   PRESET: '-preset ultrafast -movflags faststart',
-                                 },
-                                 volumes: [
-                                   {
-                                     name: 'shm',
-                                     path: '/dev/shm',
-                                   },
-                                   {
-                                     name: 'videos',
-                                     path: '/videos',
-                                   },
-                                 ],
-                               },
-                               {
-                                 name: 'test-ui',
-                                 image: 'python:' + python,
-                                 commands: [
-                                   'cd test',
-                                   './deps.sh',
-                                   'py.test -x -s ui.py --distro=buster --ui-mode=desktop --domain=buster.com --device-host=' + name + '.buster.com --app=' + name + ' --browser=' + browser,
-                                 ],
-                               },
-                             ])
-            else []) +
+             }
+             for distro in distros
+
+           ] + (if test_ui then [
+                  {
+                    name: 'selenium',
+                    image: 'selenium/standalone-' + browser + ':' + selenium,
+                    detach: true,
+                    environment: {
+                      SE_NODE_SESSION_TIMEOUT: '999999',
+                      START_XVFB: 'true',
+                    },
+                    volumes: [{
+                      name: 'shm',
+                      path: '/dev/shm',
+                    }],
+                    commands: [
+                      'cat /etc/hosts',
+                      'DOMAIN="' + distro_default + '.com"',
+                      'APP_DOMAIN="' + name + '.' + distro_default + '.com"',
+                      'getent hosts $APP_DOMAIN | sed "s/$APP_DOMAIN/auth.$DOMAIN/g" | sudo tee -a /etc/hosts',
+                      'cat /etc/hosts',
+                      '/opt/bin/entry_point.sh',
+                    ],
+                  },
+                  {
+                    name: 'selenium-video',
+                    image: 'selenium/video:ffmpeg-6.1.1-20240621',
+                    detach: true,
+                    environment: {
+                      DISPLAY_CONTAINER_NAME: 'selenium',
+                      FILE_NAME: 'video.mkv',
+                    },
+                    volumes: [
+                      {
+                        name: 'shm',
+                        path: '/dev/shm',
+                      },
+                      {
+                        name: 'videos',
+                        path: '/videos',
+                      },
+                    ],
+                  },
+
+                  {
+                    name: 'test-ui',
+                    image: 'python:' + python,
+                    commands: [
+                      'cd test',
+                      './deps.sh',
+                      'py.test -x -s ui.py --distro=' + distro_default + ' --ver=$DRONE_BUILD_NUMBER --app=' + name,
+                    ],
+                    privileged: true,
+                    volumes: [{
+                      name: 'videos',
+                      path: '/videos',
+                    }],
+                  },
+                ]
+                else []) +
            (if arch == 'amd64' then [
               {
                 name: 'test-upgrade',
                 image: 'python:' + python,
                 commands: [
-                  'APP_ARCHIVE_PATH=$(realpath $(cat package.name))',
                   'cd test',
                   './deps.sh',
-                  'py.test -x -s upgrade.py --distro=buster --ui-mode=desktop --domain=buster.com --app-archive-path=$APP_ARCHIVE_PATH --device-host=' + name + '.buster.com --app=' + name + ' --browser=' + browser,
+                  'py.test -x -s upgrade.py --distro=' + distro_default + ' --ver=$DRONE_BUILD_NUMBER --app=' + name,
                 ],
                 privileged: true,
                 volumes: [{
@@ -169,7 +178,7 @@ local build(arch, test_ui, dind) = [
             ] else []) + [
       {
         name: 'upload',
-        image: 'debian:buster-slim',
+        image: 'debian:bookworm-slim',
         environment: {
           AWS_ACCESS_KEY_ID: {
             from_secret: 'AWS_ACCESS_KEY_ID',
@@ -187,6 +196,31 @@ local build(arch, test_ui, dind) = [
         ],
         when: {
           branch: ['stable', 'master'],
+        },
+      },
+      {
+        name: 'promote',
+        image: 'debian:bookworm-slim',
+        environment: {
+          AWS_ACCESS_KEY_ID: {
+            from_secret: 'AWS_ACCESS_KEY_ID',
+          },
+          AWS_SECRET_ACCESS_KEY: {
+            from_secret: 'AWS_SECRET_ACCESS_KEY',
+          },
+          SYNCLOUD_TOKEN: {
+            from_secret: 'SYNCLOUD_TOKEN',
+          },
+        },
+        commands: [
+          'apt update && apt install -y wget',
+          'wget ' + deployer + '-' + arch + ' -O release --progress=dot:giga',
+          'chmod +x release',
+          './release promote -n ' + name + ' -a $(dpkg --print-architecture)',
+        ],
+        when: {
+          branch: ['stable'],
+          event: ['push'],
         },
       },
       {
@@ -238,9 +272,10 @@ local build(arch, test_ui, dind) = [
           },
         ],
       },
+    ] + [
       {
-        name: name + '.buster.com',
-        image: 'syncloud/platform-buster-' + arch + ':' + platform,
+        name: name + '.' + distro + '.com',
+        image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
         privileged: true,
         volumes: [
           {
@@ -252,7 +287,8 @@ local build(arch, test_ui, dind) = [
             path: '/dev',
           },
         ],
-      },
+      }
+      for distro in distros
     ],
     volumes: [
       {
@@ -281,40 +317,6 @@ local build(arch, test_ui, dind) = [
         temp: {},
       },
     ],
-  },
-  {
-    kind: 'pipeline',
-    type: 'docker',
-    name: 'promote-' + arch,
-    platform: {
-      os: 'linux',
-      arch: arch,
-    },
-    steps: [
-      {
-        name: 'promote',
-        image: 'debian:buster-slim',
-        environment: {
-          AWS_ACCESS_KEY_ID: {
-            from_secret: 'AWS_ACCESS_KEY_ID',
-          },
-          AWS_SECRET_ACCESS_KEY: {
-            from_secret: 'AWS_SECRET_ACCESS_KEY',
-          },
-        },
-        commands: [
-          'apt update && apt install -y wget',
-          'wget https://github.com/syncloud/snapd/releases/download/1/syncloud-release-' + arch + ' -O release --progress=dot:giga',
-          'chmod +x release',
-          './release promote -n ' + name + ' -a $(dpkg --print-architecture)',
-        ],
-      },
-    ],
-    trigger: {
-      event: [
-        'promote',
-      ],
-    },
   },
 ];
 
