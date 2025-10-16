@@ -28,7 +28,7 @@ local build(arch, test_ui, dind) = [
              },
              {
                name: 'cli',
-               image: 'golang:1.23',
+               image: 'golang:1.24',
                commands: [
                  'cd cli',
                  'CGO_ENABLED=0 go build -o ../build/snap/meta/hooks/install ./cmd/install',
