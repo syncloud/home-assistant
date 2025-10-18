@@ -11,6 +11,6 @@ wget https://github.com/efficiosoft/ldap-auth-sh/archive/refs/heads/master.tar.g
 tar xf master.tar.gz
 mv ldap-auth-sh-master snap/ldap-auth-sh
 
-wget -p https://github.com/hacs/integration/releases/latest/download/hacs.zip
-mkdir snap/custom_components/hacs
+wget https://github.com/hacs/integration/releases/latest/download/hacs.zip
+mkdir -p snap/custom_components/hacs
 unzip hacs.zip -d snap/custom_components/hacs
