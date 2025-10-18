@@ -203,9 +203,19 @@ func (i *Installer) UpdateConfigs() error {
 
 	err := linux.CreateMissingDirs(
 		path.Join(i.dataDir, "nginx"),
+		path.Join(i.dataDir, "custom_components"),
 	)
 	if err != nil {
 		return err
+	}
+	hacsLink := path.Join(i.dataDir, "custom_components", "hacs")
+	hacsPath := path.Join(i.appDir, "custom_components", "hacs")
+	_, err = os.Stat(hacsLink)
+	if os.IsNotExist(err) {
+		err = os.Symlink(hacsPath, hacsLink)
+		if err != nil {
+			return err
+		}
 	}
 
 	err = i.StorageChange()
