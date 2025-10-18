@@ -2,7 +2,7 @@ package installer
 
 import (
 	"fmt"
-
+	"github.com/google/uuid"
 	cp "github.com/otiai10/copy"
 	"github.com/syncloud/golib/config"
 	"github.com/syncloud/golib/linux"
@@ -36,6 +36,7 @@ type Installer struct {
 	appDir             string
 	dataDir            string
 	commonDir          string
+	haConfigDir        string
 	logger             *zap.Logger
 }
 
@@ -44,6 +45,7 @@ func New(logger *zap.Logger) *Installer {
 	dataDir := fmt.Sprint("/var/snap/", App, "/current")
 	commonDir := fmt.Sprint("/var/snap/", App, "/common")
 	configDir := path.Join(dataDir, "config")
+	haConfigDir := path.Join(dataDir, "ha.config")
 
 	executor := NewExecutor(logger)
 	return &Installer{
@@ -56,13 +58,23 @@ func New(logger *zap.Logger) *Installer {
 		appDir:             appDir,
 		dataDir:            dataDir,
 		commonDir:          commonDir,
+		haConfigDir:        haConfigDir,
 		logger:             logger,
 	}
 }
 
 func (i *Installer) Install() error {
+	err := linux.CreateUser(App)
+	if err != nil {
+		return err
+	}
+	cp.Copy(path.Join(i.configDir, "default"), i.haConfigDir)
 
-	err := i.UpdateConfigs()
+	installIdFile := path.Join(i.haConfigDir, ".install-id")
+	secret := uuid.New().String()
+	err = os.WriteFile(installIdFile, []byte(secret), 0644)
+
+	err = i.UpdateConfigs()
 	if err != nil {
 		return err
 	}
@@ -182,10 +194,6 @@ func (i *Installer) UpdateVersion() error {
 }
 
 func (i *Installer) UpdateConfigs() error {
-	err := linux.CreateUser(App)
-	if err != nil {
-		return err
-	}
 
 	err := linux.CreateMissingDirs(
 		path.Join(i.dataDir, "nginx"),
