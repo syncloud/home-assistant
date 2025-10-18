@@ -76,3 +76,10 @@ def test_remove(device, app):
 
 def test_reinstall(app_archive_path, device_host, device_password):
     local_install(device_host, device_password, app_archive_path)
+
+def test_storage_change(device):
+    device.run_ssh('snap run home-assistant.storage-change > {0}/storage-change.log'.format(TMP_DIR))
+
+
+def test_access_change(device):
+    device.run_ssh('snap run home-assistant.access-change > {0}/access-change.log'.format(TMP_DIR))
