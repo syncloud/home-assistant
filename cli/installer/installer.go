@@ -187,6 +187,13 @@ func (i *Installer) UpdateConfigs() error {
 		return err
 	}
 
+	err := linux.CreateMissingDirs(
+		path.Join(i.dataDir, "nginx"),
+	)
+	if err != nil {
+		return err
+	}
+
 	err = i.StorageChange()
 	if err != nil {
 		return err
