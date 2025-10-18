@@ -68,6 +68,12 @@ func (i *Installer) Install() error {
 	if err != nil {
 		return err
 	}
+
+	err = i.UpdateConfigs()
+	if err != nil {
+		return err
+	}
+
 	err = cp.Copy(path.Join(i.configDir, "default"), i.haConfigDir)
 	if err != nil {
 		return err
@@ -75,11 +81,6 @@ func (i *Installer) Install() error {
 	installIdFile := path.Join(i.haConfigDir, ".install-id")
 	secret := uuid.New().String()
 	err = os.WriteFile(installIdFile, []byte(secret), 0644)
-	if err != nil {
-		return err
-	}
-
-	err = i.UpdateConfigs()
 	if err != nil {
 		return err
 	}
