@@ -1,5 +1,4 @@
 local name = 'home-assistant';
-local browser = 'chrome';
 local nginx = '1.24.0';
 local browser = 'firefox';
 local platform = '25.02';

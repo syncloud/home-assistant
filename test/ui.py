@@ -81,7 +81,7 @@ def test_hacs(selenium):
     )
     assert 'add integration' in add_integration.text.lower()
     add_integration.click()
-    selenium.screenshot('hacs-add-integratiosn')
+    selenium.screenshot('hacs-add-integration')
 
     search = selenium.element_by_js(
         'document'
@@ -98,9 +98,10 @@ def test_hacs(selenium):
         'document'
         '.querySelector("home-assistant").shadowRoot'
         '.querySelector("dialog-add-integration").shadowRoot'
-        '.querySelectorAll("ha-integration-list-item")'
+        '.querySelector("ha-integration-list-item").shadowRoot'
+        '.querySelector("span.mdc-deprecated-list-item__text")'
     )
 
-    assert len(found) == 1
+    assert found.text == 'hacs'
 
     selenium.screenshot('hacs')
