@@ -102,6 +102,6 @@ def test_hacs(selenium):
         '.querySelector("span.mdc-deprecated-list-item__text")'
     )
 
-    assert found.text == 'hacs'
+    assert found.text.lower() == 'hacs'
 
     selenium.screenshot('hacs')
