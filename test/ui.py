@@ -45,3 +45,57 @@ def test_main(selenium):
         '.querySelector("h1")')
     assert home.text == 'Welcome Home'
     selenium.screenshot('main')
+
+
+def test_hacs(selenium):
+    selenium.element_by_js(
+        'document'
+        '.querySelector("home-assistant").shadowRoot'
+        '.querySelector("home-assistant-main").shadowRoot'
+        '.querySelector("ha-sidebar").shadowRoot'
+        '.querySelector(".configuration")'
+    ).click()
+
+    integrations = selenium.element_by_js(
+        'document'
+        '.querySelector("home-assistant").shadowRoot'
+        '.querySelector("home-assistant-main").shadowRoot'
+        '.querySelector("ha-config-dashboard").shadowRoot'
+        '.querySelector("ha-config-navigation").shadowRoot'
+        '.querySelector("ha-navigation-list").shadowRoot'
+        '.querySelector("ha-list-item:nth-child(2)")'
+    )
+    assert 'Integrations' in integrations.text
+    integrations.click()
+
+    add_integration = selenium.element_by_js(
+        'document'
+        '.querySelector("home-assistant").shadowRoot'
+        '.querySelector("home-assistant-main").shadowRoot'
+        '.querySelector("ha-config-integrations-dashboard").shadowRoot'
+        '.querySelector("ha-fab").shadowRoot'
+        '.querySelector("button")'
+    )
+    assert 'Add integration' in add_integration.text
+    add_integration.click()
+
+    search = selenium.element_by_js(
+        'document'
+        '.querySelector("home-assistant").shadowRoot'
+        '.querySelector("dialog-add-integration").shadowRoot'
+        '.querySelector("search-input").shadowRoot'
+        '.querySelector("ha-textfield").shadowRoot'
+        '.querySelector("input")'
+    )
+    search.send_keys('hacs')
+
+    found = selenium.element_by_js(
+        'document'
+        '.querySelector("home-assistant").shadowRoot'
+        '.querySelector("dialog-add-integration").shadowRoot'
+        '.querySelectorAll("ha-integration-list-item")'
+    )
+
+    assert len(found) == 1
+
+    selenium.screenshot('hacs')
