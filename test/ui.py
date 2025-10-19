@@ -76,7 +76,7 @@ def test_hacs(selenium):
         '.querySelector("ha-fab").shadowRoot'
         '.querySelector("button")'
     )
-    assert 'Add integration' in add_integration.text
+    assert 'add integration' in add_integration.text.lower()
     add_integration.click()
 
     search = selenium.element_by_js(
