@@ -1,5 +1,4 @@
 local name = 'home-assistant';
-local browser = 'chrome';
 local nginx = '1.24.0';
 local browser = 'firefox';
 local platform = '25.02';
@@ -26,7 +25,18 @@ local build(arch, test_ui, dind) = [
                  'echo $DRONE_BUILD_NUMBER > version',
                ],
              },
-
+             {
+               name: 'cli',
+               image: 'golang:1.24',
+               commands: [
+                 'cd cli',
+                 'CGO_ENABLED=0 go build -o ../build/snap/meta/hooks/install ./cmd/install',
+                 'CGO_ENABLED=0 go build -o ../build/snap/meta/hooks/configure ./cmd/configure',
+                 'CGO_ENABLED=0 go build -o ../build/snap/meta/hooks/pre-refresh ./cmd/pre-refresh',
+                 'CGO_ENABLED=0 go build -o ../build/snap/meta/hooks/post-refresh ./cmd/post-refresh',
+                 'CGO_ENABLED=0 go build -o ../build/snap/bin/cli ./cmd/cli',
+               ],
+             },
              {
                name: 'nginx',
                image: 'nginx:' + nginx,
@@ -67,19 +77,6 @@ local build(arch, test_ui, dind) = [
                image: 'syncloud/platform-buster-' + arch + ':' + platform,
                commands: [
                  './home-assistant/test.sh',
-               ],
-             },
-             {
-               name: 'package python',
-               image: 'docker:' + dind,
-               commands: [
-                 './python/build.sh',
-               ],
-               volumes: [
-                 {
-                   name: 'dockersock',
-                   path: '/var/run',
-                 },
                ],
              },
              {

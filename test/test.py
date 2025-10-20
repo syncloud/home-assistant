@@ -20,7 +20,6 @@ def module_setup(request, device, data_dir, platform_data_dir, app_dir, artifact
         os.mkdir(platform_log_dir)
         device.scp_from_device('{0}/log/*'.format(platform_data_dir), platform_log_dir)
 
-        device.run_ssh('mkdir {0}'.format(TMP_DIR), throw=False)
         device.run_ssh('top -bn 1 -w 500 -c > {0}/top.log'.format(TMP_DIR), throw=False)
         device.run_ssh('ps auxfw > {0}/ps.log'.format(TMP_DIR), throw=False)
         device.run_ssh('netstat -nlp > {0}/netstat.log'.format(TMP_DIR), throw=False)
@@ -48,6 +47,7 @@ def module_setup(request, device, data_dir, platform_data_dir, app_dir, artifact
 def test_start(module_setup, device, app, domain, device_host):
     add_host_alias(app, device_host, domain)
     device.run_ssh('date', retries=100, throw=True)
+    device.run_ssh('mkdir {0}'.format(TMP_DIR), throw=False)
 
 
 def test_activate_device(device):
@@ -76,3 +76,10 @@ def test_remove(device, app):
 
 def test_reinstall(app_archive_path, device_host, device_password):
     local_install(device_host, device_password, app_archive_path)
+
+def test_storage_change(device):
+    device.run_ssh('snap run home-assistant.storage-change > {0}/storage-change.log'.format(TMP_DIR))
+
+
+def test_access_change(device):
+    device.run_ssh('snap run home-assistant.access-change > {0}/access-change.log'.format(TMP_DIR))
