@@ -36,7 +36,7 @@ apps:
     command: bin/cli restore-post-start
 
 confinement: strict
-description: Home-Assistant
+description: Home automation software designed to be the central control system for smart home devices
 grade: stable
 name: home-assistant
-summary: Home-Assistant
+summary: Home Assistant
