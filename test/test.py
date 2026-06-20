@@ -52,7 +52,6 @@ def test_start(module_setup, device, app, domain, device_host):
 
 @pytest.mark.flaky(retries=50, delay=10)
 def test_activate_device(device):
-    device.run_ssh('rm -f /var/snap/platform/current/syncloud.crt', throw=False)
     response = device.activate_custom()
     assert response.status_code == 200, response.text
 
