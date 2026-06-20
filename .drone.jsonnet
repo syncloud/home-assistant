@@ -1,4 +1,5 @@
 local name = 'home-assistant';
+local version = '2026.6.4';
 local nginx = '1.24.0';
 local platform = '25.02';
 local playwright = 'v1.59.1-jammy';
@@ -7,7 +8,7 @@ local python = '3.12-slim-bookworm';
 local distro_default = 'bookworm';
 local distros = ['bookworm'];
 
-local build(arch, test_ui, dind) = [
+local build(arch, test_ui) = [
   {
     kind: 'pipeline',
     type: 'docker',
@@ -60,15 +61,9 @@ local build(arch, test_ui, dind) = [
              },
              {
                name: 'home assistant',
-               image: 'docker:' + dind,
+               image: 'homeassistant/home-assistant:' + version,
                commands: [
                  './home-assistant/build.sh',
-               ],
-               volumes: [
-                 {
-                   name: 'dockersock',
-                   path: '/var/run',
-                 },
                ],
              },
              {
@@ -163,18 +158,6 @@ local build(arch, test_ui, dind) = [
     },
     services: [
       {
-        name: 'docker',
-        image: 'docker:' + dind,
-        privileged: true,
-        volumes: [
-          {
-            name: 'dockersock',
-            path: '/var/run',
-          },
-        ],
-      },
-    ] + [
-      {
         name: name + '.' + distro + '.com',
         image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
         privileged: true,
@@ -205,14 +188,10 @@ local build(arch, test_ui, dind) = [
           path: '/dev',
         },
       },
-      {
-        name: 'dockersock',
-        temp: {},
-      },
     ],
   },
 ];
 
-build('amd64', true, '20.10.21-dind') +
-build('arm64', false, '19.03.8-dind') +
-build('arm', false, '19.03.8-dind')
+build('amd64', true) +
+build('arm64', false) +
+build('arm', false)
