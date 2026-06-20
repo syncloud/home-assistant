@@ -16,3 +16,6 @@ done
 $BUILD_DIR/bin/python -c "import tuya_sharing"
 $BUILD_DIR/bin/python -c "import speedtest"
 $BUILD_DIR/bin/python -c "from importlib.metadata import version; print('tuya-device-sharing-sdk', version('tuya-device-sharing-sdk')); print('speedtest-cli', version('speedtest-cli'))"
+
+SNAP_DIR=${DIR}/../build/snap
+find ${SNAP_DIR}/custom_components/hacs -name manifest.json | grep -q manifest.json
