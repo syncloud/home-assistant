@@ -1,9 +1,5 @@
 import { Page, ElementHandle } from '@playwright/test'
 
-// Playwright port of syncloudlib SeleniumWrapper.element_by_js: evaluate a
-// `document.querySelector(...).shadowRoot.querySelector(...)` chain (e.g. straight
-// from DevTools "Copy JS path") and return the element. Unlike the selenium version
-// it polls until the path resolves, so it tolerates HA's async shadow-DOM rendering.
 export async function elementByJs (page: Page, js: string, timeout = 30_000): Promise<ElementHandle<HTMLElement>> {
   const guarded = `(() => { try { return (${js}) } catch (e) { return null } })()`
   await page.waitForFunction(`${guarded} != null`, undefined, { timeout, polling: 500 })

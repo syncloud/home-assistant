@@ -24,7 +24,7 @@ async function dump (page: Page, name: string) {
 
 test('dump shadow trees for the integration flow', async ({ page }, info) => {
   test.setTimeout(900_000)
-  try { await login(page, baseURL, username, password) } catch (e) { /* dump whatever is there */ }
+  try { await login(page, baseURL, username, password) } catch (e) { void e }
   await dump(page, '01-dashboard')
 
   const targets: [string, string][] = [
@@ -35,7 +35,7 @@ test('dump shadow trees for the integration flow', async ({ page }, info) => {
     ['06-hacs-flow', `${baseURL}/_my_redirect/config_flow_start?domain=hacs`]
   ]
   for (const [name, url] of targets) {
-    try { await page.goto(url, { waitUntil: 'domcontentloaded' }) } catch (e) { /* still dump */ }
+    try { await page.goto(url, { waitUntil: 'domcontentloaded' }) } catch (e) { void e }
     await dump(page, name)
   }
 })
