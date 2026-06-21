@@ -1,14 +1,14 @@
 local name = 'home-assistant';
+local version = '2026.6.4';
 local nginx = '1.24.0';
-local browser = 'firefox';
-local platform = '25.02';
-local selenium = '4.35.0-20250828';
-local deployer = 'https://github.com/syncloud/store/releases/download/4/syncloud-release';
+local platform = '26.06.01';
+local playwright = 'v1.59.1-jammy';
+local store_publisher = 'stable-303';
 local python = '3.12-slim-bookworm';
 local distro_default = 'bookworm';
 local distros = ['bookworm'];
 
-local build(arch, test_ui, dind) = [
+local build(arch, test_ui) = [
   {
     kind: 'pipeline',
     type: 'docker',
@@ -61,15 +61,9 @@ local build(arch, test_ui, dind) = [
              },
              {
                name: 'home assistant',
-               image: 'docker:' + dind,
+               image: 'homeassistant/home-assistant:' + version,
                commands: [
                  './home-assistant/build.sh',
-               ],
-               volumes: [
-                 {
-                   name: 'dockersock',
-                   path: '/var/run',
-                 },
                ],
              },
              {
@@ -101,122 +95,34 @@ local build(arch, test_ui, dind) = [
 
            ] + (if test_ui then [
                   {
-                    name: 'selenium',
-                    image: 'selenium/standalone-' + browser + ':' + selenium,
-                    detach: true,
-                    environment: {
-                      SE_NODE_SESSION_TIMEOUT: '999999',
-                      START_XVFB: 'true',
-                    },
-                    volumes: [{
-                      name: 'shm',
-                      path: '/dev/shm',
-                    }],
+                    name: 'test-ui-' + project,
+                    image: 'mcr.microsoft.com/playwright:' + playwright,
                     commands: [
-                      'cat /etc/hosts',
-                      'DOMAIN="' + distro_default + '.com"',
-                      'APP_DOMAIN="' + name + '.' + distro_default + '.com"',
-                      'getent hosts $APP_DOMAIN | sed "s/$APP_DOMAIN/auth.$DOMAIN/g" | sudo tee -a /etc/hosts',
-                      'cat /etc/hosts',
-                      '/opt/bin/entry_point.sh',
+                      'PLAYWRIGHT_DOMAIN=' + distro_default + '.com ./web/e2e/ci-ui.sh ' + project,
                     ],
-                  },
-                  {
-                    name: 'selenium-video',
-                    image: 'selenium/video:ffmpeg-6.1.1-20240621',
-                    detach: true,
-                    environment: {
-                      DISPLAY_CONTAINER_NAME: 'selenium',
-                      FILE_NAME: 'video.mkv',
-                    },
-                    volumes: [
-                      {
-                        name: 'shm',
-                        path: '/dev/shm',
-                      },
-                      {
-                        name: 'videos',
-                        path: '/videos',
-                      },
-                    ],
-                  },
-
-                  {
-                    name: 'test-ui',
-                    image: 'python:' + python,
-                    commands: [
-                      'cd test',
-                      './deps.sh',
-                      'py.test -x -s ui.py --distro=' + distro_default + ' --ver=$DRONE_BUILD_NUMBER --app=' + name,
-                    ],
-                    privileged: true,
-                    volumes: [{
-                      name: 'videos',
-                      path: '/videos',
-                    }],
-                  },
-                ]
-                else []) +
+                  }
+                  for project in ['desktop', 'mobile']
+                ] else []) +
            (if arch == 'amd64' then [
               {
                 name: 'test-upgrade',
-                image: 'python:' + python,
+                image: 'mcr.microsoft.com/playwright:' + playwright,
                 commands: [
-                  'cd test',
-                  './deps.sh',
-                  'py.test -x -s upgrade.py --distro=' + distro_default + ' --ver=$DRONE_BUILD_NUMBER --app=' + name,
+                  'PLAYWRIGHT_DOMAIN=' + distro_default + '.com ./web/e2e/ci-upgrade.sh',
                 ],
-                privileged: true,
-                volumes: [{
-                  name: 'videos',
-                  path: '/videos',
-                }],
               },
             ] else []) + [
       {
-        name: 'upload',
-        image: 'debian:bookworm-slim',
+        name: 'publish',
+        image: 'syncloud/store-publisher:' + store_publisher,
         environment: {
-          AWS_ACCESS_KEY_ID: {
-            from_secret: 'AWS_ACCESS_KEY_ID',
-          },
-          AWS_SECRET_ACCESS_KEY: {
-            from_secret: 'AWS_SECRET_ACCESS_KEY',
-          },
-        },
-        commands: [
-          'PACKAGE=$(cat package.name)',
-          'apt update && apt install -y wget',
-          'wget https://github.com/syncloud/snapd/releases/download/1/syncloud-release-' + arch + ' -O release --progress=dot:giga',
-          'chmod +x release',
-          './release publish -f $PACKAGE -b $DRONE_BRANCH',
-        ],
-        when: {
-          branch: ['stable', 'master'],
-        },
-      },
-      {
-        name: 'promote',
-        image: 'debian:bookworm-slim',
-        environment: {
-          AWS_ACCESS_KEY_ID: {
-            from_secret: 'AWS_ACCESS_KEY_ID',
-          },
-          AWS_SECRET_ACCESS_KEY: {
-            from_secret: 'AWS_SECRET_ACCESS_KEY',
-          },
           SYNCLOUD_TOKEN: {
             from_secret: 'SYNCLOUD_TOKEN',
           },
         },
-        commands: [
-          'apt update && apt install -y wget',
-          'wget ' + deployer + '-' + arch + ' -O release --progress=dot:giga',
-          'chmod +x release',
-          './release promote -n ' + name + ' -a $(dpkg --print-architecture)',
-        ],
+        command: ['snap', '-c', '${DRONE_BRANCH}'],
         when: {
-          branch: ['stable'],
+          branch: ['master', 'stable'],
           event: ['push'],
         },
       },
@@ -237,14 +143,7 @@ local build(arch, test_ui, dind) = [
           source: [
             'artifact/*',
           ],
-          privileged: true,
           strip_components: 1,
-          volumes: [
-            {
-              name: 'videos',
-              path: '/drone/src/artifact/videos',
-            },
-          ],
         },
         when: {
           status: ['failure', 'success'],
@@ -254,26 +153,14 @@ local build(arch, test_ui, dind) = [
     trigger: {
       event: [
         'push',
-        'pull_request',
       ],
     },
     services: [
       {
-        name: 'docker',
-        image: 'docker:' + dind,
-        privileged: true,
-        volumes: [
-          {
-            name: 'dockersock',
-            path: '/var/run',
-          },
-        ],
-      },
-    ] + [
-      {
         name: name + '.' + distro + '.com',
         image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
         privileged: true,
+        entrypoint: ['/bin/sh', '-c', "mkdir -p /etc/systemd/system/snapd.service.d && printf '[Service]\\nExecStartPost=/bin/sh -c \"/usr/bin/snap set system refresh.hold=2099-01-01T00:00:00Z\"\\n' > /etc/systemd/system/snapd.service.d/disable-refresh.conf && exec /sbin/init"],
         volumes: [
           {
             name: 'dbus',
@@ -300,23 +187,9 @@ local build(arch, test_ui, dind) = [
           path: '/dev',
         },
       },
-      {
-        name: 'shm',
-        temp: {},
-      },
-      {
-        name: 'videos',
-        temp: {},
-      },
-
-      {
-        name: 'dockersock',
-        temp: {},
-      },
     ],
   },
 ];
 
-build('amd64', true, '20.10.21-dind') +
-build('arm64', false, '19.03.8-dind') +
-build('arm', false, '19.03.8-dind')
+build('amd64', true) +
+build('arm64', false)
