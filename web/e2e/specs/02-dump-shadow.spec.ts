@@ -27,15 +27,16 @@ test('dump shadow trees for the integration flow', async ({ page }, info) => {
   try { await login(page, baseURL, username, password) } catch (e) { void e }
   await dump(page, '01-dashboard')
 
-  const targets: [string, string][] = [
-    ['02-integrations', `${baseURL}/config/integrations/dashboard`],
-    ['03-add-dialog', `${baseURL}/config/integrations/dashboard/add`],
-    ['04-tuya-flow', `${baseURL}/_my_redirect/config_flow_start?domain=tuya`],
-    ['05-speedtest-flow', `${baseURL}/_my_redirect/config_flow_start?domain=speedtestdotnet`],
-    ['06-hacs-flow', `${baseURL}/_my_redirect/config_flow_start?domain=hacs`]
-  ]
-  for (const [name, url] of targets) {
-    try { await page.goto(url, { waitUntil: 'domcontentloaded' }) } catch (e) { void e }
-    await dump(page, name)
+  try { await page.goto(`${baseURL}/config/integrations/dashboard`, { waitUntil: 'domcontentloaded' }) } catch (e) { void e }
+  await dump(page, '02-integrations')
+
+  for (const term of ['tuya', 'speedtest', 'hacs']) {
+    try { await page.goto(`${baseURL}/config/integrations/dashboard`, { waitUntil: 'domcontentloaded' }) } catch (e) { void e }
+    await page.waitForTimeout(2000)
+    try { await page.getByRole('button', { name: /add integration/i }).click({ timeout: 30000 }) } catch (e) { void e }
+    await page.waitForTimeout(2000)
+    await dump(page, `03-add-open-${term}`)
+    try { await page.keyboard.type(term); await page.waitForTimeout(2500) } catch (e) { void e }
+    await dump(page, `04-search-${term}`)
   }
 })
