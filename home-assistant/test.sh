@@ -19,3 +19,9 @@ $BUILD_DIR/bin/python -c "from importlib.metadata import version; print('tuya-de
 
 SNAP_DIR=${DIR}/../build/snap
 find ${SNAP_DIR}/custom_components/hacs -name manifest.json | grep -q manifest.json
+
+set +e
+echo "=== speedtest cli run (non-gating) ==="
+$BUILD_DIR/bin/python -m speedtest --simple
+echo "speedtest exit=$?"
+set -e
