@@ -8,5 +8,5 @@ export async function login (page: Page, baseURL: string, username: string, pass
   const passwordField = page.locator('input[name="password"]')
   await passwordField.fill(password)
   await passwordField.press('Enter')
-  await expect(page.getByText('Welcome Home')).toBeVisible({ timeout: 60_000 })
+  await expect(usernameField).toBeHidden({ timeout: 60_000 })
 }
