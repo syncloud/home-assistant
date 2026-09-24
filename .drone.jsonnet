@@ -1,5 +1,7 @@
 local name = 'home-assistant';
 local version = '2026.6.4';
+local matter = '8.1.0';
+local otbr = 'sha256:b3925a9fc7ca8cf0996effb5398f4d23c40713511f56ca40a2b660a6c4fe1231';
 local nginx = '1.24.0';
 local platform = '26.06.01';
 local playwright = 'v1.59.1-jammy';
@@ -73,6 +75,39 @@ local build(arch, test_ui) = [
                  './home-assistant/test.sh',
                ],
              },
+             {
+               name: 'matter',
+               image: 'ghcr.io/home-assistant-libs/python-matter-server:' + matter,
+               commands: [
+                 './matter/build.sh',
+               ],
+             },
+             {
+               name: 'otbr',
+               image: 'openthread/otbr@' + otbr,
+               commands: [
+                 './otbr/build.sh',
+               ],
+             },
+           ] + [
+             {
+               name: 'matter test ' + distro,
+               image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
+               commands: [
+                 './matter/test.sh',
+               ],
+             }
+             for distro in ['bookworm', 'buster']
+           ] + [
+             {
+               name: 'otbr test ' + distro,
+               image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
+               commands: [
+                 './otbr/test.sh',
+               ],
+             }
+             for distro in ['bookworm', 'buster']
+           ] + [
              {
                name: 'package',
                image: 'debian:bookworm-slim',

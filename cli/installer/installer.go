@@ -203,8 +203,15 @@ func (i *Installer) UpdateConfigs() error {
 
 	err := linux.CreateMissingDirs(
 		path.Join(i.dataDir, "nginx"),
+		path.Join(i.dataDir, "matter", "credentials"),
+		path.Join(i.dataDir, "otbr"),
 		path.Join(i.haConfigDir, "custom_components"),
 	)
+	if err != nil {
+		return err
+	}
+
+	err = i.InstallDBusPolicy()
 	if err != nil {
 		return err
 	}
@@ -245,6 +252,32 @@ func (i *Installer) UpdateConfigs() error {
 
 	return nil
 
+}
+
+func (i *Installer) InstallDBusPolicy() error {
+	source := path.Join(i.appDir, "otbr", "etc", "dbus-1", "system.d", "otbr-agent.conf")
+	policy, err := os.ReadFile(source)
+	if err != nil {
+		return err
+	}
+
+	targetDir := "/etc/dbus-1/system.d"
+	err = linux.CreateMissingDirs(targetDir)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(path.Join(targetDir, "otbr-agent.conf"), policy, 0644)
+	if err != nil {
+		return err
+	}
+
+	err = i.executor.Run("systemctl", "reload", "dbus")
+	if err != nil {
+		i.logger.Error("dbus reload failed, otbr-agent dbus interface stays unavailable until dbus restarts", zap.Error(err))
+	}
+
+	return nil
 }
 
 func (i *Installer) FixPermissions() error {

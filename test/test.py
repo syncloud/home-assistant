@@ -78,6 +78,30 @@ def test_remove(device, app):
 def test_reinstall(app_archive_path, device_host, device_password):
     local_install(device_host, device_password, app_archive_path)
 
+def test_matter_server_listens(device):
+    device.run_ssh('journalctl -u snap.home-assistant.matter > {0}/matter.log'.format(TMP_DIR), throw=False)
+    device.run_ssh("sh -c 'netstat -nltp | grep -q 127.0.0.1:5580'", retries=100)
+
+
+def test_matter_server_initialized(device):
+    device.run_ssh("sh -c 'journalctl -u snap.home-assistant.matter | grep -q \"Matter Server successfully initialized\"'",
+                   retries=100)
+
+
+def test_otbr_waits_for_radio(device):
+    device.run_ssh('journalctl -u snap.home-assistant.otbr > {0}/otbr.log'.format(TMP_DIR), throw=False)
+    device.run_ssh("sh -c 'journalctl -u snap.home-assistant.otbr | grep -q \"thread radio not configured\"'",
+                   retries=50)
+
+
+def test_otbr_dbus_policy_installed(device):
+    device.run_ssh('test -f /etc/dbus-1/system.d/otbr-agent.conf')
+
+
+def test_avahi_keeps_mdns_socket(device):
+    device.run_ssh("sh -c 'pgrep -x avahi-daemon > /dev/null || exit 0; netstat -nlup | grep 5353 | grep -q avahi'")
+
+
 def test_storage_change(device):
     device.run_ssh('snap run home-assistant.storage-change > {0}/storage-change.log'.format(TMP_DIR))
 
