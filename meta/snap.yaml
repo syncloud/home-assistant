@@ -4,20 +4,30 @@ apps:
     command: bin/service.home-assistant.sh
     daemon: simple
     start-timeout: 600s
-    plugs:
-    - network
-    - network-bind
     restart-condition: always
+    restart-delay: 10s
     before: [nginx]
 
   nginx:
     user: home-assistant
     command: bin/service.nginx.sh
     daemon: simple
-    plugs:
-    - network
-    - network-bind
     restart-condition: always
+    restart-delay: 10s
+    start-timeout: 600s
+
+  matter:
+    command: bin/service.matter.sh
+    daemon: simple
+    restart-condition: always
+    restart-delay: 10s
+    start-timeout: 600s
+
+  otbr:
+    command: bin/service.otbr.sh
+    daemon: simple
+    restart-condition: on-failure
+    restart-delay: 10s
     start-timeout: 600s
 
   storage-change:
@@ -35,7 +45,6 @@ apps:
   restore-post-start:
     command: bin/cli restore-post-start
 
-confinement: strict
 description: Home automation software designed to be the central control system for smart home devices
 grade: stable
 name: home-assistant
