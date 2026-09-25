@@ -78,6 +78,51 @@ def test_remove(device, app):
 def test_reinstall(app_archive_path, device_host, device_password):
     local_install(device_host, device_password, app_archive_path)
 
+def test_matter_server_listens_on_unix_socket(device):
+    device.run_ssh('journalctl -u snap.home-assistant.matter > {0}/matter.log'.format(TMP_DIR), throw=False)
+    device.run_ssh('test -S /var/snap/home-assistant/current/matter.socket', retries=100)
+
+
+def test_matter_server_opens_no_tcp_port(device):
+    device.run_ssh("sh -c '! netstat -nltp | grep -q :5580'")
+
+
+def test_matter_server_listening_logged(device):
+    device.run_ssh("sh -c 'journalctl -u snap.home-assistant.matter | grep -q Webserver.listening.on.unix.socket'",
+                   retries=10)
+
+
+def test_matter_bluetooth_enabled(device):
+    device.run_ssh("sh -c 'journalctl -u snap.home-assistant.matter | grep -q Bluetooth.enabled'",
+                   retries=10)
+
+
+def test_otbr_waits_for_radio(device):
+    device.run_ssh('journalctl -u snap.home-assistant.otbr > {0}/otbr.log'.format(TMP_DIR), throw=False)
+    device.run_ssh("sh -c 'journalctl -u snap.home-assistant.otbr | grep -q thread.radio.not.configured'",
+                   retries=10)
+
+
+def test_avahi_keeps_mdns_socket(device):
+    device.run_ssh("sh -c 'pgrep -x avahi-daemon > /dev/null || exit 0; netstat -nlup | grep 5353 | grep -q avahi'")
+
+
+HA_CONFIG = '/var/snap/home-assistant/current/ha.config'
+
+
+def test_http_config_not_a_pending_trial(device):
+    device.run_ssh("sh -c 'grep -q yaml_migration_done.:.true {0}/.storage/http'".format(HA_CONFIG),
+                   retries=50)
+
+
+def test_http_yaml_block_removed(device):
+    device.run_ssh("sh -c '! grep -q use_x_forwarded_for {0}/configuration.yaml'".format(HA_CONFIG))
+
+
+def test_http_trusted_proxies_still_applied(device):
+    device.run_ssh("sh -c 'grep -q 127.0.0.1/32 {0}/.storage/http'".format(HA_CONFIG))
+
+
 def test_storage_change(device):
     device.run_ssh('snap run home-assistant.storage-change > {0}/storage-change.log'.format(TMP_DIR))
 
