@@ -8,9 +8,16 @@ To connect Home Assistant to it, add the Matter integration
 (Settings -> Devices & services -> Add integration -> Matter) and accept the
 default WebSocket URL `ws://localhost:5580/ws`.
 
-Commissioning a new Matter device over Bluetooth needs a Bluetooth adapter on
-the device. Where there is none, commission with the Home Assistant companion
-app or an ESPHome Bluetooth proxy.
+Commissioning a new Matter device over Bluetooth needs a Bluetooth adapter.
+The first adapter found is used automatically; where there is none,
+commissioning falls back to network-only, so use the Home Assistant companion
+app or an ESPHome Bluetooth proxy instead.
+
+To pick a specific adapter, or to turn Bluetooth off, write its number (or
+`none`) and restart:
+
+    echo 1 > /var/snap/home-assistant/current/matter/bluetooth-adapter
+    snap restart home-assistant.matter
 
 ## Thread
 

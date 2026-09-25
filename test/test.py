@@ -88,6 +88,10 @@ def test_matter_server_initialized(device):
                    retries=100)
 
 
+def test_matter_bluetooth_decision_logged(device):
+    device.run_ssh("sh -c 'journalctl -u snap.home-assistant.matter | grep -q bluetooth'", retries=50)
+
+
 def test_otbr_waits_for_radio(device):
     device.run_ssh('journalctl -u snap.home-assistant.otbr > {0}/otbr.log'.format(TMP_DIR), throw=False)
     device.run_ssh("sh -c 'journalctl -u snap.home-assistant.otbr | grep -q thread.radio.not.configured'",
