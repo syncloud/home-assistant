@@ -4,13 +4,12 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 cd ${DIR}/build
 
-apt update
-apt -y install wget unzip
+${DIR}/apt.sh wget unzip
 
-wget https://github.com/efficiosoft/ldap-auth-sh/archive/refs/heads/master.tar.gz
+${DIR}/download-retry.sh https://github.com/efficiosoft/ldap-auth-sh/archive/refs/heads/master.tar.gz master.tar.gz
 tar xf master.tar.gz
 mv ldap-auth-sh-master snap/ldap-auth-sh
 
-wget https://github.com/hacs/integration/releases/latest/download/hacs.zip
+${DIR}/download-retry.sh https://github.com/hacs/integration/releases/latest/download/hacs.zip hacs.zip
 mkdir -p snap/custom_components/hacs
 unzip hacs.zip -d snap/custom_components/hacs

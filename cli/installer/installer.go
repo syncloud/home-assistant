@@ -37,6 +37,7 @@ type Installer struct {
 	dataDir            string
 	commonDir          string
 	haConfigDir        string
+	haConfigFile       string
 	logger             *zap.Logger
 }
 
@@ -59,6 +60,7 @@ func New(logger *zap.Logger) *Installer {
 		dataDir:            dataDir,
 		commonDir:          commonDir,
 		haConfigDir:        haConfigDir,
+		haConfigFile:       path.Join(haConfigDir, "configuration.yaml"),
 		logger:             logger,
 	}
 }
@@ -104,6 +106,16 @@ func (i *Installer) Configure() error {
 	err := linux.CreateMissingDirs(
 		path.Join(i.dataDir, "tmp"),
 	)
+	if err != nil {
+		return err
+	}
+
+	err = i.EnsureHttpStore()
+	if err != nil {
+		return err
+	}
+
+	err = i.RemoveHttpYaml()
 	if err != nil {
 		return err
 	}
@@ -203,11 +215,14 @@ func (i *Installer) UpdateConfigs() error {
 
 	err := linux.CreateMissingDirs(
 		path.Join(i.dataDir, "nginx"),
+		path.Join(i.dataDir, "matter"),
+		path.Join(i.dataDir, "otbr"),
 		path.Join(i.haConfigDir, "custom_components"),
 	)
 	if err != nil {
 		return err
 	}
+
 	hacsLink := path.Join(i.haConfigDir, "custom_components", "hacs")
 	hacsPath := path.Join(i.appDir, "custom_components", "hacs")
 	_, err = os.Stat(hacsLink)
