@@ -9,6 +9,7 @@ local store_publisher = 'stable-346';
 local python = '3.12-slim-bookworm';
 local distro_default = 'bookworm';
 local distros = ['bookworm'];
+local bundle_distros = ['bookworm', 'buster'];
 
 local build(arch, test_ui) = [
   {
@@ -82,6 +83,16 @@ local build(arch, test_ui) = [
                  './matter/build.sh',
                ],
              },
+           ] + [
+             {
+               name: 'matter test ' + distro,
+               image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
+               commands: [
+                 './matter/test.sh',
+               ],
+             }
+             for distro in bundle_distros
+           ] + [
              {
                name: 'otbr',
                image: 'openthread/otbr@' + otbr,
@@ -91,22 +102,13 @@ local build(arch, test_ui) = [
              },
            ] + [
              {
-               name: 'matter test ' + distro,
-               image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
-               commands: [
-                 './matter/test.sh',
-               ],
-             }
-             for distro in ['bookworm', 'buster']
-           ] + [
-             {
                name: 'otbr test ' + distro,
                image: 'syncloud/platform-' + distro + '-' + arch + ':' + platform,
                commands: [
                  './otbr/test.sh',
                ],
              }
-             for distro in ['bookworm', 'buster']
+             for distro in bundle_distros
            ] + [
              {
                name: 'package',
