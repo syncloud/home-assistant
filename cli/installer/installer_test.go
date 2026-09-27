@@ -1,9 +1,10 @@
 package installer
 
 import (
-	"github.com/stretchr/testify/assert"
 	"path"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestInitialized(t *testing.T) {
@@ -17,3 +18,4 @@ func TestInitialized(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, installer.IsInstalled())
 }
+

@@ -1,0 +1,19 @@
+--- a/server/WebServer.js
++++ b/server/WebServer.js
+@@ -43,8 +43,14 @@
+     const displayHost = host ?? "0.0.0.0";
+     return new Promise((resolve, reject) => {
+       let resolvedOrErrored = false;
+-      server.listen({ host, port: this.#port }, () => {
+-        logger.notice(`Webserver listening on http://${displayHost}:${this.#port}`);
++      const isUnixSocket = typeof host === "string" && host.startsWith("/");
++      const listenTarget = isUnixSocket ? { path: host } : { host, port: this.#port };
++      server.listen(listenTarget, () => {
++        logger.notice(
++          isUnixSocket
++            ? `Webserver listening on unix socket ${host}`
++            : `Webserver listening on http://${displayHost}:${this.#port}`
++        );
+         if (!resolvedOrErrored) {
+           resolvedOrErrored = true;
+           resolve();

@@ -1,0 +1,19 @@
+--- a/python_otbr_api/__init__.py
++++ b/python_otbr_api/__init__.py
+@@ -107,8 +107,14 @@
+         key_format: KeyFormat | None = None,
+     ) -> None:
+         """Initialize."""
+-        self._session = session
+-        self._url = url
++        if url.startswith("unix://"):
++            self._session = aiohttp.ClientSession(
++                connector=aiohttp.UnixConnector(path=url[len("unix://"):])
++            )
++            self._url = "http://localhost"
++        else:
++            self._session = session
++            self._url = url
+         self._timeout = timeout
+         self._key_format = key_format
+ 

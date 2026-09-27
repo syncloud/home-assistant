@@ -37,6 +37,8 @@ type Installer struct {
 	dataDir            string
 	commonDir          string
 	haConfigDir        string
+	ha                 *Ha
+	otbr               *Otbr
 	logger             *zap.Logger
 }
 
@@ -48,6 +50,7 @@ func New(logger *zap.Logger) *Installer {
 	haConfigDir := path.Join(dataDir, "ha.config")
 
 	executor := NewExecutor(logger)
+	snap := NewSnap()
 	return &Installer{
 		newVersionFile:     path.Join(appDir, "version"),
 		currentVersionFile: path.Join(dataDir, "version"),
@@ -59,6 +62,8 @@ func New(logger *zap.Logger) *Installer {
 		dataDir:            dataDir,
 		commonDir:          commonDir,
 		haConfigDir:        haConfigDir,
+		ha:                 NewHa(appDir, haConfigDir, logger),
+		otbr:               NewOtbr(dataDir, snap),
 		logger:             logger,
 	}
 }
@@ -104,6 +109,16 @@ func (i *Installer) Configure() error {
 	err := linux.CreateMissingDirs(
 		path.Join(i.dataDir, "tmp"),
 	)
+	if err != nil {
+		return err
+	}
+
+	err = i.otbr.ApplyConfig()
+	if err != nil {
+		return err
+	}
+
+	err = i.ha.EnsureHttpStore()
 	if err != nil {
 		return err
 	}
@@ -203,11 +218,14 @@ func (i *Installer) UpdateConfigs() error {
 
 	err := linux.CreateMissingDirs(
 		path.Join(i.dataDir, "nginx"),
+		path.Join(i.dataDir, "matter"),
+		path.Join(i.dataDir, "otbr"),
 		path.Join(i.haConfigDir, "custom_components"),
 	)
 	if err != nil {
 		return err
 	}
+
 	hacsLink := path.Join(i.haConfigDir, "custom_components", "hacs")
 	hacsPath := path.Join(i.appDir, "custom_components", "hacs")
 	_, err = os.Stat(hacsLink)
@@ -281,3 +299,4 @@ func (i *Installer) RestorePreStart() error {
 func (i *Installer) RestorePostStart() error {
 	return i.Configure()
 }
+

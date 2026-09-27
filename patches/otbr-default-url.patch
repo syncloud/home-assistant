@@ -1,0 +1,18 @@
+--- a/homeassistant/components/otbr/config_flow.py
++++ b/homeassistant/components/otbr/config_flow.py
+@@ -182,7 +182,14 @@
+                     data={CONF_URL: url},
+                 )
+ 
+-        data_schema = vol.Schema({CONF_URL: str})
++        data_schema = vol.Schema(
++            {
++                vol.Required(
++                    CONF_URL,
++                    default="unix:///var/snap/home-assistant/current/otbr.socket",
++                ): str
++            }
++        )
+         return self.async_show_form(
+             step_id="user", data_schema=data_schema, errors=errors
+         )
