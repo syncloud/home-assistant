@@ -1,0 +1,34 @@
+--- a/homeassistant/config.py
++++ b/homeassistant/config.py
+@@ -256,9 +256,31 @@
+         )
+         core_config[CONF_PACKAGES] = {}
+ 
++    _apply_syncloud_config(config)
++
+     return config
+ 
+ 
++SYNCLOUD_AUTH_PROVIDERS = [
++    {
++        "type": "command_line",
++        "command": "/snap/home-assistant/current/ldap-auth-sh/ldap-auth.sh",
++        "args": ["/var/snap/home-assistant/current/config/ldap-auth-sh.cfg"],
++        "meta": True,
++    }
++]
++SYNCLOUD_FFMPEG = {
++    "ffmpeg_bin": "/snap/home-assistant/current/home-assistant/bin/ffmpeg"
++}
++
++
++def _apply_syncloud_config(config: dict) -> None:
++    config.pop("http", None)
++    core = config.setdefault(HOMEASSISTANT_DOMAIN, {})
++    core["auth_providers"] = SYNCLOUD_AUTH_PROVIDERS
++    config["ffmpeg"] = SYNCLOUD_FFMPEG
++
++
+ def load_yaml_config_file(
+     config_path: str, secrets: Secrets | None = None
+ ) -> dict[Any, Any]:
