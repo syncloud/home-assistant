@@ -138,3 +138,14 @@ def test_storage_change(device):
 
 def test_access_change(device):
     device.run_ssh('snap run home-assistant.access-change > {0}/access-change.log'.format(TMP_DIR))
+
+
+def test_custom_integration_requirements_importable(device):
+    device.scp_to_device(join(DIR, 'custom_components'), HA_CONFIG, throw=True)
+    device.run_ssh("sh -c 'grep -q ^deps_check: {0}/configuration.yaml || echo deps_check: >> {0}/configuration.yaml'".format(HA_CONFIG))
+    device.run_ssh('snap restart home-assistant.server')
+    try:
+        device.run_ssh("timeout 600 sh -c 'until test -f {0}/deps_check.ok; do sleep 5; done'".format(HA_CONFIG))
+    finally:
+        device.run_ssh('cp {0}/home-assistant.log {1}/home-assistant.log'.format(HA_CONFIG, TMP_DIR), throw=False)
+        device.run_ssh('find / -type d -name hass_web_proxy_lib > {0}/deps.find.log 2>/dev/null'.format(TMP_DIR), throw=False)

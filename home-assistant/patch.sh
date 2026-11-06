@@ -12,3 +12,4 @@ git apply --directory="${SITE_PACKAGES}" patches/otbr-client-unix-socket.patch
 git apply --directory="${CORE}" patches/matter-default-url.patch
 git apply --directory="${CORE}" patches/otbr-default-url.patch
 git apply --directory="${CORE}" patches/system-config.patch
+git apply --directory="${CORE}" patches/requirements-target.patch
