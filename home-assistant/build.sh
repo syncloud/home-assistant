@@ -13,6 +13,14 @@ for entry in /*; do
   cp -a "${entry}" ${BUILD_DIR}/
 done
 
+apk add --no-cache patchelf
+SNAP_ROOT=/snap/home-assistant/current/home-assistant
+PYTHON=$(readlink -f ${BUILD_DIR}/usr/local/bin/python3)
+patchelf \
+  --set-interpreter ${SNAP_ROOT}$(patchelf --print-interpreter ${PYTHON}) \
+  --force-rpath --set-rpath ${SNAP_ROOT}/usr/local/lib:${SNAP_ROOT}/usr/lib:${SNAP_ROOT}/lib \
+  ${PYTHON}
+
 sed -i '/import sys/a sys.executable = "/snap/home-assistant/current/home-assistant/bin/python"' ${BUILD_DIR}/usr/src/homeassistant/homeassistant/__main__.py
 
 TURBOJPEG=$(ls ${BUILD_DIR}/usr/local/lib/python3.*/site-packages/turbojpeg.py)
