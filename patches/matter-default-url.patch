@@ -1,11 +1,11 @@
 --- a/homeassistant/components/matter/config_flow.py
 +++ b/homeassistant/components/matter/config_flow.py
-@@ -35,7 +35,7 @@
- 
- ADDON_SETUP_TIMEOUT = 5
+@@ -38,7 +38,7 @@
  ADDON_SETUP_TIMEOUT_ROUNDS = 40
+ # Below the documented 2 GB, allowing for memory a Raspberry Pi reserves for the GPU.
+ MIN_MEMORY_FOR_ONBOARDING_ADDON = 1536 * 1024**2
 -DEFAULT_URL = "ws://localhost:5580/ws"
 +DEFAULT_URL = "unix:///var/snap/home-assistant/current/matter.socket"
  DEFAULT_TITLE = "Matter"
- ON_SUPERVISOR_SCHEMA = vol.Schema({vol.Optional(CONF_USE_ADDON, default=True): bool})
- 
+ ON_SUPERVISOR_SCHEMA = probatio.Schema(
+     {probatio.Optional(CONF_USE_ADDON, default=True): bool}

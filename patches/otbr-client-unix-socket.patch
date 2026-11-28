@@ -1,6 +1,6 @@
 --- a/python_otbr_api/__init__.py
 +++ b/python_otbr_api/__init__.py
-@@ -107,8 +107,14 @@
+@@ -240,8 +240,14 @@
          key_format: KeyFormat | None = None,
      ) -> None:
          """Initialize."""
@@ -16,4 +16,4 @@
 +            self._url = url
          self._timeout = timeout
          self._key_format = key_format
- 
+         self._api_version: str | None | _UndefinedType = _UNDEFINED

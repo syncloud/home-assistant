@@ -4,3 +4,8 @@ package.name
 domain
 .idea
 __pycache__
+build
+artifact
+version
+*.snap
+node_modules
