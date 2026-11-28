@@ -1,5 +1,5 @@
 local name = 'home-assistant';
-local version = '2026.9.3';
+local version = '2026.11.3';
 local matter = '1.4.0';
 local nginx = '1.30.7';
 local platform = '26.06.01';
